@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "233932047969",
+    "project_id": "the-play-app",
+    "storage_bucket": "the-play-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233932047969:android:3c2d30508e75d309b28c20",
+        "android_client_info": {
+          "package_name": "com.jazzinternship.play.play_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233932047969-ll4d5fo6ljc5254meo7ikplklif4qrrl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBElopwBrNiA3T2ZUxrgjqz1zZWtiL3ngg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233932047969-ll4d5fo6ljc5254meo7ikplklif4qrrl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,9 +13,11 @@ class Play extends StatelessWidget {
       theme: kPlayThemeData,
       title: 'Play',
       home: AnimatedSplashScreen(
+        splashIconSize: 200,
+        duration: 2600,
         nextScreen: HomeScreen(),
         splash: Image.asset(
-          'assets/images/logo_transparent.png'
+          'assets/images/logo_transparent.png',
         ),
         splashTransition: SplashTransition.rotationTransition,
         backgroundColor: kDarkBlueColor,

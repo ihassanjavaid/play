@@ -14,3 +14,6 @@ final kPlayThemeData = ThemeData(
   dialogBackgroundColor: kScaffoldBackgroundColor,
   scaffoldBackgroundColor: kScaffoldBackgroundColor,
 );
+
+// Enumerations
+enum LoadingType { SIGNIN, SIGNUP }
