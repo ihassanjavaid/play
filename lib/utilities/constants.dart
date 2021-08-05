@@ -1,14 +1,8 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 
 // Colors
-final kScaffoldBackgroundColor = Color(0xffF2F2F2);
-final kDarkBlueColor = Color(0xff0D0D26);
-final kDarkPinkColor = Color(0xffA62D65);
-final kMidPinkColor = Color(0xffD94A8C);
-final kShockingPinkColor = Color(0xffF2529D);
 
+final kScaffoldBackgroundColor = Color(0xFFedf5f4);
 final kMedTealColor = Color(0xff599186);
 final kTealColor = Color(0xff45736A);
 final kDarkTealColor = Color(0xff26403b);
@@ -57,4 +51,17 @@ final kBottomNavBarTextStyle = TextStyle(
   fontSize: 22.0,
   color: kTealColor,
   fontFamily: 'CM Sans Serif',
+);
+
+final kOnBoardingTitleStyle = TextStyle(
+  color: kTealColor,
+  fontFamily: 'CM Sans Serif',
+  fontSize: 26.0,
+  height: 1.5,
+);
+
+final kOnBoardingSubtitleStyle = TextStyle(
+  color: kTealColor,
+  fontSize: 18.0,
+  height: 1.2,
 );

@@ -18,14 +18,13 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  late String _name;
-  late String _email;
-  late String _password;
+  String? _name;
+  String? _email;
+  String? _password;
   Auth _auth = Auth();
-  FirestoreUserService _firestoreUserService = FirestoreUserService();
+  //FirestoreUserService _firestoreUserService = FirestoreUserService();
   FirestoreUserService _firestore = FirestoreUserService();
-  late User _fbuser;
-  late String _uid;
+  String? _uid;
 
   Widget _buildEmailTextField() {
     return Column(
@@ -39,6 +38,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             keyboardType: TextInputType.emailAddress,
             onChanged: (value) {
               this._email = value;
+              print(_email);
             },
             style: TextStyle(
               color: Colors.white,
@@ -72,6 +72,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             keyboardType: TextInputType.emailAddress,
             onChanged: (value) {
               this._name = value;
+              print(this._name);
             },
             style: TextStyle(
               color: Colors.white,
@@ -131,13 +132,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       padding: const EdgeInsets.only(bottom: 10.0, top: 10.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) =>LoadingScreen(
-            name: this._name,
-            email: this._email, password: this._password,
-            fbUser: this._fbuser,
-            firestoreUserService: this._firestore, auth: this._auth,
-            loadingType: LoadingType.SIGNUP, rememberMe: false, userData: UserData(displayName: '', email: ''),
-          )));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LoadingScreen(
+                        name: this._name!,
+                        email: this._email!,
+                        password: this._password!,
+                        //fbUser: this._fbuser,
+                        firestoreUserService: this._firestore,
+                        auth: this._auth,
+                        loadingType: LoadingType.SIGNUP,
+                        rememberMe: false,
+                        userData: UserData(displayName: '', email: ''),
+                      )));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -307,23 +315,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         children: [
                           Container(
                             alignment: Alignment.centerRight,
-                            child: FlatButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, LoginScreen.id);
-                              },
-                              child: Text(
-                                'Sign In',
-                                style: kBottomNavBarTextStyle,
-                              ),
-                            ),
+                            // child: FlatButton(
+                            //   onPressed: () {
+                            //     Navigator.pushNamed(context, LoginScreen.id);
+                            //   },
+                            //   child: Text(
+                            //     'Sign In',
+                            //     style: kBottomNavBarTextStyle,
+                            //   ),
+                            // ),
                           ),
                           Center(
-                            child: Container(
-                              margin: EdgeInsets.only(top: 12.0),
-                              child: Image(
-                                image: AssetImage('assets/images/eye.png'),
-                                height: 180.0,
-                                width: 180.0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: Container(
+                                child: Image(
+                                  image: AssetImage('assets/images/logo_transparent.png'),
+                                  height: 120.0,
+                                  width: 120.0,
+                                ),
                               ),
                             ),
                           ),
@@ -337,8 +347,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
                       ),
                       Padding(
-                        padding:
-                            const EdgeInsets.only(top: 28.0, bottom: 10.0),
+                        padding: const EdgeInsets.only(top: 28.0, bottom: 10.0),
                         child: Text('Sign Up',
                             style: kBottomNavBarTextStyle.copyWith(
                                 fontSize: 30.0)),

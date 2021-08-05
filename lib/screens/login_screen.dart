@@ -1,9 +1,10 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:play_app/models/user_data.dart';
+import 'package:play_app/screens/loading_screen.dart';
+import 'package:play_app/screens/registration_screen.dart';
 import 'package:play_app/services/auth_service.dart';
 import 'package:play_app/services/firestore_user_service.dart';
 import 'package:play_app/utilities/constants.dart';
@@ -17,14 +18,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late String _email;
-  late String _password;
-  late UserData _userData;
+  String? _email;
+  String? _password;
+  UserData? _userData;
   bool _rememberMe = false;
   Auth _auth = Auth();
   FirestoreUserService _firestore = FirestoreUserService();
-  late User _fbuser;
-  late String _uid;
+  //User _fbuser;
+  //String _uid;
 
   Widget _buildEmailTextField() {
     return Column(
@@ -127,13 +128,21 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: const EdgeInsets.only(bottom: 10.0, top: 10.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) =>LoadingScreen(
-            email: this._email, password: this._password,
-            rememberMe: _rememberMe, fbUser: this._fbuser,
-            firestoreUserService: this._firestore, auth: this._auth,
-            userData: this._userData,
-            loadingType: LoadingType.SIGNIN,
-          )));
+          _userData = UserData(email: this._email!, displayName: "");
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LoadingScreen(
+                        email: this._email!,
+                        password: this._password!,
+                        rememberMe: _rememberMe,
+                        //fbUser: this._fbuser!,
+                        firestoreUserService: this._firestore,
+                        auth: this._auth,
+                        userData: this._userData!,
+                        loadingType: LoadingType.SIGNIN,
+                        name: this._userData!.displayName,
+                      )));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -225,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     blurRadius: 6.0,
                   ),
                 ],
-               /* image: DecorationImage(
+                /* image: DecorationImage(
                   image: AssetImage (
                     'assets/logos/google_icon.jpg',
                   ),
@@ -297,11 +306,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Container(
-                        child: Image(
-                          image: AssetImage('assets/images/eye.png'),
-                          height: 180.0,
-                          width: 180.0,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Container(
+                          child: Image(
+                            image: AssetImage(
+                                'assets/images/logo_transparent.png'),
+                            height: 120.0,
+                            width: 120.0,
+                          ),
                         ),
                       ),
                       Center(
@@ -312,8 +325,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       Padding(
-                        padding:
-                            const EdgeInsets.only(top: 28.0, bottom: 10.0),
+                        padding: const EdgeInsets.only(top: 28.0, bottom: 10.0),
                         child: Text('Sign In',
                             style: kBottomNavBarTextStyle.copyWith(
                                 fontSize: 30.0)),

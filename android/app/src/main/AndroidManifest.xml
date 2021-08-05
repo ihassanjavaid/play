@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jazzinternship.play.play_app">
    <application
-        android:label="play_app"
+        android:label="Play"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
