@@ -2,6 +2,7 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:play_app/models/channel_model.dart';
 import 'package:play_app/models/video_model.dart';
+import 'package:play_app/screens/video_screen.dart';
 import 'package:play_app/services/youtube_api_service.dart';
 import 'package:play_app/utilities/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,7 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+          _scrollController.animateTo(0,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.fastOutSlowIn);
         },
         mini: true,
         backgroundColor: kTealColor,
@@ -61,16 +64,11 @@ class _HomeScreenState extends State<HomeScreen> {
           //height: size.height,
           //color: kScaffoldBackgroundColor,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xffe8e0d1),
-                kScaffoldBackgroundColor
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops:[0.01,0.2]
-            )
-          ),
+              gradient: LinearGradient(
+                  colors: [Color(0xffe8e0d1), kScaffoldBackgroundColor],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.01, 0.2])),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
@@ -304,7 +302,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        // onTap: () {}
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => VideoScreen(id: video!.id),
+            ),
+          );
+        },
         child: Material(
           elevation: 8.0,
           borderRadius: BorderRadius.circular(12.0),
@@ -335,8 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: MediaQuery.of(context).size.width - 200,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 2.0, left: 8.0),
-                    child: Text(
-                      "${video.title!.substring(0, 12)}...",
+                    child: Text("${video.title!.substring(0, 12)}...",
                         //overflow: ,
                         style: kOnBoardingTitleStyle.copyWith(
                             color: kScaffoldBackgroundColor, fontSize: 22)),
