@@ -20,6 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Channel? _channel;
   bool _isLoading = false;
 
+  final ScrollController _scrollController = ScrollController();
+
   String channelID = 'UCVD09YmuX1QwX4XSyI84q5g';
 
   @override
@@ -40,22 +42,35 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+        },
+        mini: true,
+        backgroundColor: kTealColor,
+        foregroundColor: kAmberColor,
+        child: Icon(
+          Icons.keyboard_arrow_up_outlined,
+        ),
+      ),
       backgroundColor: kScaffoldBackgroundColor,
       body: SingleChildScrollView(
+        controller: _scrollController,
         physics: AlwaysScrollableScrollPhysics(),
         child: Container(
+          //height: size.height,
           //color: kScaffoldBackgroundColor,
-          // decoration: BoxDecoration(
-          //   gradient: LinearGradient(
-          //     colors: [
-          //       Color(0xffe8e0d1),
-          //       kScaffoldBackgroundColor
-          //     ],
-          //     begin: Alignment.topCenter,
-          //     end: Alignment.bottomCenter,
-          //     stops:[0.01,0.2]
-          //   )
-          // ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xffe8e0d1),
+                kScaffoldBackgroundColor
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops:[0.01,0.2]
+            )
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
@@ -71,8 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Container(
                             height: 80,
                             width: 80,
-                            child:
-                                Image.asset('assets/images/logo_transparent.png'),
+                            child: Image.asset(
+                                'assets/images/logo_transparent.png'),
                           ),
                         ),
                         Padding(
@@ -80,7 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Container(
                             child: Text(
                               'Play',
-                              style: kOnBoardingTitleStyle.copyWith(fontSize: 38),
+                              style:
+                                  kOnBoardingTitleStyle.copyWith(fontSize: 38),
                             ),
                           ),
                         )
@@ -129,33 +145,68 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
-                  child: Container(
-                    height: size.height / 4,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          primary: kScaffoldBackgroundColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 12.0),
+                  child: Material(
+                    elevation: 8.0,
+                    borderRadius: BorderRadius.circular(12.0),
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: size.height / 4,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: FractionallySizedBox(
+                              widthFactor: 1.2,
+                              child: Image.network(
+                                _channel!.videos![4].thumbnailUrl!,
+                                fit: BoxFit.fitWidth,
+                              ),
+                            ),
                           ),
-                          elevation: 5.0,
                         ),
-                        child: FutureBuilder(
-                          builder: (BuildContext context,
-                              AsyncSnapshot<dynamic> snapshot) {
-                            Video video = _channel!.videos![0];
-                            return Container(
-                              height: double.infinity,
-                                width: double.infinity,
-                                child: Image.network(
-                              video.thumbnailUrl!,
-                              fit: BoxFit.fill,
-                            ));
-                          },
-                        )),
+                        Positioned(
+                          bottom: 16,
+                          left: 16,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.0),
+                              color: kAmberColor,
+                            ),
+                            height: 42,
+                            width: 120,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 2.0, left: 8.0),
+                              child: Text('Thoughts...',
+                                  style: kOnBoardingTitleStyle.copyWith(
+                                      color: kScaffoldBackgroundColor,
+                                      fontSize: 22)),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 16,
+                          left: 146,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.0),
+                              color: kAmberColor,
+                            ),
+                            height: 42,
+                            width: 42,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 2.8, left: 9.8),
+                              child: Text('E1',
+                                  style: kOnBoardingTitleStyle.copyWith(
+                                      color: kScaffoldBackgroundColor,
+                                      fontSize: 22)),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 buildAmberDivider(),
@@ -167,7 +218,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: kOnBoardingTitleStyle,
                     ),
                   ),
-                )
+                ),
+                Container(
+                  height: 1000,
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: _channel!.videos!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      Video video = _channel!.videos![index];
+                      return _buildVideo(video);
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -236,5 +298,73 @@ class _HomeScreenState extends State<HomeScreen> {
       _name = _name.substring(0, _name.indexOf(' '));
     }
     return _name;
+  }
+
+  _buildVideo(Video? video) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GestureDetector(
+        // onTap: () {}
+        child: Material(
+          elevation: 8.0,
+          borderRadius: BorderRadius.circular(12.0),
+          child: Stack(
+            children: [
+              Container(
+                height: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: FractionallySizedBox(
+                    widthFactor: 1.2,
+                    child: Image.network(
+                      video!.thumbnailUrl!,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 16,
+                left: 16,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: kAmberColor,
+                  ),
+                  height: 42,
+                  width: MediaQuery.of(context).size.width - 200,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2.0, left: 8.0),
+                    child: Text(
+                      "${video.title!.substring(0, 12)}...",
+                        //overflow: ,
+                        style: kOnBoardingTitleStyle.copyWith(
+                            color: kScaffoldBackgroundColor, fontSize: 22)),
+                  ),
+                ),
+              ),
+              /*Positioned(
+                bottom: 16,
+                left: 146,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: kAmberColor,
+                  ),
+                  height: 42,
+                  width: 42,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2.8, left: 9.8),
+                    child: Text('E1',
+                        style: kOnBoardingTitleStyle.copyWith(
+                            color: kScaffoldBackgroundColor, fontSize: 22)),
+                  ),
+                ),
+              )*/
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
