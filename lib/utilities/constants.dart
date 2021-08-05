@@ -65,3 +65,9 @@ final kOnBoardingSubtitleStyle = TextStyle(
   fontSize: 18.0,
   height: 1.2,
 );
+
+final kNavyBarTextStyle = TextStyle(
+  fontFamily: 'CM Sans Serif',
+  fontSize: 18.0,
+  height: 1.2,
+);
