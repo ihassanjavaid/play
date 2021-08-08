@@ -5,32 +5,32 @@ import 'package:play_app/models/common/track.dart';
 
 class Data {
   Data({
-    required this.test,
-    required this.maxStoredFrameRate,
-    required this.status,
-    required this.tracks,
-    required this.id,
-    required this.maxStoredResolution,
-    required this.masterAccess,
-    required this.playbackIds,
-    required this.createdAt,
-    required this.duration,
-    required this.mp4Support,
-    required this.aspectRatio,
+    this.test,
+     this.maxStoredFrameRate,
+     this.status,
+     this.tracks,
+     this.id,
+     this.maxStoredResolution,
+     this.masterAccess,
+     this.playbackIds,
+     this.createdAt,
+     this.duration,
+     this.mp4Support,
+     this.aspectRatio,
   });
 
-  bool test;
-  double maxStoredFrameRate;
-  String status;
+  bool? test;
+  double? maxStoredFrameRate;
+  String? status;
   List<Track?>? tracks;
-  String id;
-  String maxStoredResolution;
-  String masterAccess;
+  String? id;
+  String? maxStoredResolution;
+  String? masterAccess;
   List<PlaybackId?>? playbackIds;
-  String createdAt;
-  double duration;
-  String mp4Support;
-  String aspectRatio;
+  String? createdAt;
+  double? duration;
+  String? mp4Support;
+  String? aspectRatio;
 
   factory Data.fromRawJson(String str) => Data.fromJson(json.decode(str));
 

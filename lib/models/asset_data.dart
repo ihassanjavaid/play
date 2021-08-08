@@ -4,7 +4,7 @@ import 'common/data.dart';
 
 class AssetData {
   AssetData({
-    required this.data,
+    this.data,
   });
 
   List<Data?>? data;

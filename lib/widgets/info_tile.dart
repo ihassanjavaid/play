@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:play_app/utilities/constants.dart';
 
 class InfoTile extends StatelessWidget {
-  final String name;
-  final String data;
+  final String? name;
+  final String? data;
 
   InfoTile({
-    required this.name,
-    required this.data,
+    this.name,
+    this.data,
   });
 
   @override
@@ -16,7 +16,7 @@ class InfoTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          name,
+          name!,
           style: TextStyle(
             color: CustomColors.muxGray,
             fontSize: 16.0,
@@ -25,7 +25,7 @@ class InfoTile extends StatelessWidget {
         ),
         SizedBox(height: 4.0),
         Text(
-          data,
+          data!,
           style: TextStyle(
             color: CustomColors.muxGray.withOpacity(0.6),
             fontSize: 14.0,

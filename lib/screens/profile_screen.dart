@@ -35,6 +35,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       CircleAvatar(
+                        backgroundColor: kDarkPurpleColor,
+                        foregroundColor: kDarkPurpleColor,
                         backgroundImage: NetworkImage(
                             "https://www.pikpng.com/pngl/m/154-1540525_male-user-filled-icon-my-profile-icon-png.png"),
                         radius: 50.0,

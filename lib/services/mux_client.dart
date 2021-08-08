@@ -42,12 +42,12 @@ class MUXClient {
     if (response.statusCode == 200) {
       VideoData? videoData = VideoData.fromJson(response.data);
 
-      String status = videoData.data!.status;
+      String? status = videoData.data!.status;
 
       while (status == 'preparing') {
         print('check');
         await Future.delayed(Duration(seconds: 1));
-        videoData = await checkPostStatus(videoId: videoData!.data!.id);
+        videoData = await checkPostStatus(videoId: videoData!.data!.id!);
         status = videoData!.data!.status;
       }
 
@@ -87,22 +87,22 @@ class MUXClient {
   /// Method for retrieving the entire asset list.
   ///
   /// Returns the `AssetData`.
-  Future<AssetData?> getAssetList() async {
+  Future<AssetData>? getAssetList() async {
     try {
       Response response = await _dio.get(
         "/assets",
       );
-
+      print("Status Code: ${response.statusCode}");
       if (response.statusCode == 200) {
         AssetData assetData = AssetData.fromJson(response.data);
-
         return assetData;
       }
+      print('here, no exception');
     } catch (e) {
       print('Error starting build: $e');
-      throw Exception('Failed to retireve videos from MUX');
+      throw Exception('Failed to retrieve videos');
     }
 
-    return null;
+    return AssetData(data: []);
   }
 }

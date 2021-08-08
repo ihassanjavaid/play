@@ -46,7 +46,7 @@ class VideoTile extends StatelessWidget {
               Container(
                 width: double.maxFinite,
                 decoration: BoxDecoration(
-                  color: CustomColors.muxGray.withOpacity(0.8),
+                  color: kPurpleColor,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(5.0),
                     topRight: Radius.circular(5.0),
@@ -63,17 +63,19 @@ class VideoTile extends StatelessWidget {
                     softWrap: false,
                     overflow: TextOverflow.fade,
                     text: TextSpan(
-                      text: 'ID: ',
+                      text: 'Video ID: ',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,
+                        fontFamily: 'Nunito',
                       ),
                       children: [
                         TextSpan(
-                          text: assetData.id,
+                          text: "${assetData.id!.substring(0, 8)}...",
                           style: TextStyle(
-                            fontSize: 12.0,
+                            fontSize: 16.0,
                             color: Colors.white70,
+                              fontFamily: 'Nunito'
                           ),
                         )
                       ],
@@ -87,8 +89,8 @@ class VideoTile extends StatelessWidget {
                   isReady
                       ? Image.network(
                           thumbnailUrl,
-                          cacheWidth: 200,
-                          cacheHeight: 110,
+                          cacheWidth: 400,
+                          cacheHeight: 120,
                         )
                       : Flexible(
                           child: AspectRatio(
@@ -117,24 +119,26 @@ class VideoTile extends StatelessWidget {
                             text: TextSpan(
                               text: 'Duration: ',
                               style: TextStyle(
-                                color: CustomColors.muxGray,
+                                color: Colors.white,
                                 fontSize: 14.0,
+                                  fontFamily: 'Nunito'
                               ),
                               children: [
                                 TextSpan(
                                   text: assetData.duration == null
                                       ? 'N/A'
-                                      : assetData.duration.toStringAsFixed(2),
+                                      : assetData.duration!.toStringAsFixed(2),
                                   style: TextStyle(
                                     // fontSize: 12.0,
                                     color:
-                                        CustomColors.muxGray.withOpacity(0.6),
+                                    Colors.white,
+                                      fontFamily: 'Nunito'
                                   ),
                                 )
                               ],
                             ),
                           ),
-                          SizedBox(height: 4.0),
+                          SizedBox(height: 12.0),
                           RichText(
                             maxLines: 1,
                             softWrap: false,
@@ -142,8 +146,10 @@ class VideoTile extends StatelessWidget {
                             text: TextSpan(
                               text: 'Status: ',
                               style: TextStyle(
-                                color: CustomColors.muxGray,
+                                color: Colors.white,
                                 fontSize: 14.0,
+
+                                  fontFamily: 'Nunito'
                               ),
                               children: [
                                 TextSpan(
@@ -151,21 +157,23 @@ class VideoTile extends StatelessWidget {
                                   style: TextStyle(
                                     // fontSize: 12.0,
                                     color:
-                                        CustomColors.muxGray.withOpacity(0.6),
+                                    Colors.white,
+                                      fontFamily: 'Nunito'
                                   ),
                                 )
                               ],
                             ),
                           ),
-                          SizedBox(height: 4.0),
+                          SizedBox(height: 12.0),
                           RichText(
                             maxLines: 2,
                             overflow: TextOverflow.fade,
                             text: TextSpan(
                               text: 'Created at: ',
                               style: TextStyle(
-                                color: CustomColors.muxGray,
+                                color: Colors.white,
                                 fontSize: 14.0,
+                                  fontFamily: 'Nunito'
                               ),
                               children: [
                                 TextSpan(
@@ -173,7 +181,8 @@ class VideoTile extends StatelessWidget {
                                   style: TextStyle(
                                     // fontSize: 12.0,
                                     color:
-                                        CustomColors.muxGray.withOpacity(0.6),
+                                    Colors.white,
+                                    fontFamily: 'Nunito'
                                   ),
                                 )
                               ],

@@ -56,4 +56,32 @@ class AlertWidget{
     );
   }
 
+  generateUploadVideoDialog({ @required context, @required title, @required description}){
+    return Alert(
+      context: context,
+      type: AlertType.none,
+      title: title,
+      desc: description,
+      content: TextField(
+        decoration: InputDecoration(
+          icon: Icon(Icons.connected_tv),
+          labelText: 'http://',
+        ),
+      ),
+      buttons: [
+        DialogButton(
+          color: kPurpleColor,
+          child: Text(
+            "Upload",
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          width: 130,
+        )
+      ],
+    );
+  }
+
 }

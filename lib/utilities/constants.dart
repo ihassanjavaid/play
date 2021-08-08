@@ -9,7 +9,7 @@ const secretTokenMUX = MUX_TOKEN_SECRET;
 const muxBaseUrl = 'https://api.mux.com';
 
 // API server running on localhost
-const muxServerUrl = 'http://localhost:3000';
+const muxServerUrl = 'http://10.0.2.2:3000';
 
 // API for generating thumbnails of a video
 const muxImageBaseUrl = 'https://image.mux.com';
@@ -53,7 +53,7 @@ final kPurpleColor = Color(0xff8267f7);
 // Theme data
 final kPlayThemeData = ThemeData(
   backgroundColor: kScaffoldBackgroundColor,
-  dialogBackgroundColor: kScaffoldBackgroundColor,
+  dialogBackgroundColor: Colors.white,
   scaffoldBackgroundColor: kScaffoldBackgroundColor,
 );
 
