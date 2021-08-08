@@ -12,6 +12,17 @@ class LikesScreen extends StatefulWidget {
 class _LikesScreenState extends State<LikesScreen> {
   @override
   Widget build(BuildContext context) {
+    return LikedVideos();
+  }
+}
+
+class LikedVideos extends StatelessWidget {
+  const LikedVideos({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       color: kScaffoldBackgroundColor,
       child: Center(

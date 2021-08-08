@@ -20,7 +20,7 @@ class Play extends StatelessWidget {
         splashIconSize: 200,
         duration: 2600,
         //nextScreen: OnBoardingScreen(),
-        nextScreen: ProfileScreen(),
+        nextScreen: HomeScreen(),
         splash: Image.asset(
           'assets/images/logo_transparent.png',
         ),

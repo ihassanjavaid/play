@@ -34,4 +34,26 @@ class AlertWidget{
     );
   }
 
+  generateContiueWatchingAlert({ @required context, @required title, @required description}){
+    return Alert(
+      context: context,
+      type: AlertType.warning,
+      title: title,
+      desc: description,
+      buttons: [
+        DialogButton(
+          color: kTealColor,
+          child: Text(
+            "Okay!",
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          width: 130,
+        )
+      ],
+    );
+  }
+
 }

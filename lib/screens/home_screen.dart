@@ -2,9 +2,13 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:play_app/models/channel_model.dart';
 import 'package:play_app/models/video_model.dart';
+import 'package:play_app/screens/likes_screen.dart';
+import 'package:play_app/screens/profile_screen.dart';
+import 'package:play_app/screens/search_screen.dart';
 import 'package:play_app/screens/video_screen.dart';
 import 'package:play_app/services/youtube_api_service.dart';
 import 'package:play_app/utilities/constants.dart';
+import 'package:play_app/widgets/alert_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  late Widget bodyWidget;
 
   Channel? _channel;
   bool _isLoading = false;
@@ -29,6 +34,37 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _initChannel();
+  }
+  
+  void getScreen(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    //bodyWidget = buildHomeScreen(size);
+    switch (_currentIndex){
+      case 0:
+        setState(() {
+          bodyWidget = buildHomeScreen(size);
+        });
+
+        break;
+      case 1:
+        setState(() {
+          bodyWidget = BuildSearchBar(isPortrait: true);
+        });
+
+        break;
+      case 2:
+        setState(() {
+          bodyWidget = LikedVideos();
+        });
+
+        break;
+      case 3:
+        setState(() {
+          bodyWidget = ProfileScreen();
+        });
+        break;
+    }
+
   }
 
   _initChannel() async {
@@ -43,21 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _scrollController.animateTo(0,
-              duration: Duration(milliseconds: 500),
-              curve: Curves.fastOutSlowIn);
-        },
-        mini: true,
-        backgroundColor: kTealColor,
-        foregroundColor: kAmberColor,
-        child: Icon(
-          Icons.keyboard_arrow_up_outlined,
-        ),
-      ),
+      floatingActionButton: buildFloatingActionButton(),
       backgroundColor: kScaffoldBackgroundColor,
-      body: buildHomeScreen(size),
+      body: bodyWidget,
       bottomNavigationBar: BottomNavyBar(
         iconSize: 28,
         selectedIndex: _currentIndex,
@@ -66,7 +90,12 @@ class _HomeScreenState extends State<HomeScreen> {
         curve: Curves.easeIn,
         backgroundColor: kScaffoldBackgroundColor,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        onItemSelected: (index) => setState(() => _currentIndex = index),
+        //onItemSelected: (index) => setState(() => _currentIndex = index),
+        onItemSelected: (index) {
+          _currentIndex = index;
+          getScreen(context);
+
+        },
         containerHeight: 62,
         items: [
           BottomNavyBarItem(
@@ -98,6 +127,26 @@ class _HomeScreenState extends State<HomeScreen> {
             textAlign: TextAlign.center,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildFloatingActionButton() {
+    bool toShow = _currentIndex == 0;
+    return Visibility(
+      visible: toShow,
+      child: FloatingActionButton(
+        onPressed: () {
+          _scrollController.animateTo(0,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.fastOutSlowIn);
+        },
+        mini: true,
+        backgroundColor: kTealColor,
+        foregroundColor: kAmberColor,
+        child: Icon(
+          Icons.keyboard_arrow_up_outlined,
+        ),
       ),
     );
   }
@@ -166,12 +215,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (!snapshot.hasData) {
                     return Text('');
                   } else {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 12.0, top: 0.0),
-                      child: Container(
-                        child: Text(
-                          'Hi ${snapshot.data.toString()},\nContinue Watching >',
-                          style: kOnBoardingTitleStyle,
+                    return GestureDetector(
+                      onTap: () {
+                        AlertWidget()
+                            .generateContiueWatchingAlert(
+                            context: context,
+                            title: "Nothing to Show!",
+                            description: 'No videos found in history to show. Please continue to Homepage.')
+                            .show();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12.0, top: 0.0),
+                        child: Container(
+                          child: Text(
+                            'Hi ${snapshot.data.toString()},\nContinue Watching >',
+                            style: kOnBoardingTitleStyle,
+                          ),
                         ),
                       ),
                     );
@@ -310,7 +369,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => VideoScreen(id: video!.id),
+              builder: (_) => VideoScreen(video: video!),
             ),
           );
         },

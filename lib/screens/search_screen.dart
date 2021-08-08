@@ -17,13 +17,13 @@ class _SearchScreenState extends State<SearchScreen> {
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
     return Scaffold(
-      body: buildSearchBar(isPortrait: isPortrait),
+      body: BuildSearchBar(isPortrait: isPortrait),
     );
   }
 }
 
-class buildSearchBar extends StatelessWidget {
-  const buildSearchBar({
+class BuildSearchBar extends StatelessWidget {
+  const BuildSearchBar({
     Key? key,
     required this.isPortrait,
   }) : super(key: key);
