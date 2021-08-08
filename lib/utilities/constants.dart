@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 // Colors
 
-final kScaffoldBackgroundColor = Color(0xFFedf5f4);
+// final kScaffoldBackgroundColor = Color(0xFFedf5f4);
+final kScaffoldBackgroundColor = kLightPurpleColor;
 final kMedTealColor = Color(0xff599186);
 final kTealColor = Color(0xff45736A);
 final kDarkTealColor = Color(0xff26403b);
@@ -12,6 +13,7 @@ final kPeachColor = Color(0xffF2AA80);
 
 final kDarkPurpleColor = Color(0xff241c3c);
 final kLightPurpleColor = Color(0xffa6bcee);
+final kPurpleColor = Color(0xff8267f7);
 
 // Theme data
 final kPlayThemeData = ThemeData(

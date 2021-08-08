@@ -1,5 +1,6 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:play_app/components/custom_painter.dart';
 import 'package:play_app/models/channel_model.dart';
 import 'package:play_app/models/video_model.dart';
 import 'package:play_app/screens/likes_screen.dart';
@@ -20,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
+  int currentIndex = 0;
   late Widget bodyWidget;
 
   Channel? _channel;
@@ -35,14 +36,20 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _initChannel();
   }
+
+  setBottomBarIndex(index) {
+    setState(() {
+      currentIndex = index;
+    });
+  }
   
   void getScreen(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    //bodyWidget = buildHomeScreen(size);
-    switch (_currentIndex){
+    bodyWidget = Container();
+    switch (currentIndex){
       case 0:
         setState(() {
-          bodyWidget = buildHomeScreen(size);
+          bodyWidget = Container();
         });
 
         break;
@@ -76,6 +83,90 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      backgroundColor: kDarkPurpleColor,
+      body: bodyWidget,
+      bottomNavigationBar: Container(
+      height: size.height/6,
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: Container(
+                width: size.width,
+                height: 80,
+                child: Stack(
+                  overflow: Overflow.visible,
+                  children: [
+                    CustomPaint(
+                      size: Size(size.width, 80),
+                      painter: BNBCustomPainter(),
+                    ),
+                    Center(
+                      heightFactor: 0.6,
+                      child: FloatingActionButton(backgroundColor: kPurpleColor, child: Icon(Icons.video_call), elevation: 0.1, onPressed: () {}),
+                    ),
+                    Container(
+                      width: size.width,
+                      height: 80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.home,
+                              color: currentIndex == 0 ? kPurpleColor : Colors.grey.shade400,
+                            ),
+                            onPressed: () {
+                              setBottomBarIndex(0);
+                            },
+                            splashColor: Colors.white,
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.search,
+                                color: currentIndex == 1 ? kPurpleColor : Colors.grey.shade400,
+                              ),
+                              onPressed: () {
+                                setBottomBarIndex(1);
+                              }),
+                          Container(
+                            width: size.width * 0.20,
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.bookmark,
+                                color: currentIndex == 2 ? kPurpleColor : Colors.grey.shade400,
+                              ),
+                              onPressed: () {
+                                setBottomBarIndex(2);
+                              }),
+                          IconButton(
+                              icon: Icon(
+                                Icons.menu,
+                                color: currentIndex == 3 ? kPurpleColor : Colors.grey.shade400,
+                              ),
+                              onPressed: () {
+                                setBottomBarIndex(3);
+                              }),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+  /*@override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     if (_currentIndex == 0) bodyWidget = buildHomeScreen(size);
@@ -150,10 +241,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
+  }*/
 
   Widget buildHomeScreen(Size size) {
-    return FutureBuilder(
+    /*return FutureBuilder(
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (_channel == null){
           return Center(
@@ -352,14 +443,15 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
       },
-    );
+    );*/
+    return Container();
   }
 
   Padding buildAmberDivider() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
       child: Container(
-        color: kAmberColor,
+        color: kPurpleColor,
         height: 2,
       ),
     );
@@ -376,7 +468,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return _name;
   }
 
-  _buildVideo(Video? video) {
+  /*_buildVideo(Video? video) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -425,7 +517,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              /*Positioned(
+              *//*Positioned(
                 bottom: 16,
                 left: 146,
                 child: Container(
@@ -442,11 +534,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: kScaffoldBackgroundColor, fontSize: 22)),
                   ),
                 ),
-              )*/
+              )*//*
             ],
           ),
         ),
       ),
     );
-  }
-}
+  }*/
+
