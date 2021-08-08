@@ -4,6 +4,7 @@ import 'package:play_app/components/custom_painter.dart';
 import 'package:play_app/models/asset_data.dart';
 import 'package:play_app/models/channel_model.dart';
 import 'package:play_app/screens/likes_screen.dart';
+import 'package:play_app/screens/preview_page.dart';
 import 'package:play_app/screens/profile_screen.dart';
 import 'package:play_app/screens/search_screen.dart';
 import 'package:play_app/services/mux_client.dart';

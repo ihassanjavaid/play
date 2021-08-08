@@ -2,6 +2,7 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:play_app/routes.dart';
 import 'package:play_app/screens/home_screen.dart';
+import 'package:play_app/screens/login_screen.dart';
 import 'package:play_app/utilities/constants.dart';
 
 class Play extends StatelessWidget {
@@ -15,8 +16,8 @@ class Play extends StatelessWidget {
       home: AnimatedSplashScreen(
         splashIconSize: 200,
         duration: 2600,
-        //nextScreen: LoginScreen(),
-        nextScreen: HomeScreen(),
+        nextScreen: LoginScreen(),
+        // nextScreen: HomeScreen(),
         splash: Image.asset(
           'assets/images/logo_transparent.png',
         ),

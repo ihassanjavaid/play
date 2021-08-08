@@ -43,11 +43,14 @@ class _PreviewPageState extends State<PreviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        brightness: Brightness.dark,
-        title: Text('Video preview'),
-        backgroundColor: CustomColors.muxPink,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        backgroundColor: kPurpleColor,
+        child: Icon(
+          Icons.home
+        ),
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),

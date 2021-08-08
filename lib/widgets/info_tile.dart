@@ -12,28 +12,33 @@ class InfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          name!,
-          style: TextStyle(
-            color: CustomColors.muxGray,
-            fontSize: 16.0,
-            fontWeight: FontWeight.w500,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            name!,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18.0,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'CM Sans Serif'
+            ),
           ),
-        ),
-        SizedBox(height: 4.0),
-        Text(
-          data!,
-          style: TextStyle(
-            color: CustomColors.muxGray.withOpacity(0.6),
-            fontSize: 14.0,
-            fontWeight: FontWeight.w400,
+          SizedBox(height: 8.0),
+          Text(
+            data!,
+            style: TextStyle(
+              color: kPurpleColor,
+              fontSize: 16.0,
+              //fontWeight: FontWeight.w400,
+              fontFamily: 'Nunito'
+            ),
           ),
-        ),
-        SizedBox(height: 8.0),
-      ],
+          SizedBox(height: 8.0),
+        ],
+      ),
     );
   }
 }
