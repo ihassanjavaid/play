@@ -10,6 +10,8 @@ final kAmberColor = Color(0xffF2B035);
 final kLightAmberColor = Color(0xffF2CA7E);
 final kPeachColor = Color(0xffF2AA80);
 
+final kDarkPurpleColor = Color(0xff241c3c);
+final kLightPurpleColor = Color(0xffa6bcee);
 
 // Theme data
 final kPlayThemeData = ThemeData(
@@ -38,24 +40,24 @@ final kLoginBoxDecorationStyle = BoxDecoration(
 
 final kLoginHintTextStyle = TextStyle(
   color: Colors.white54,
-  fontFamily: 'CM Sans Serif',
+  fontFamily: 'Nunito',
 );
 
 final kLoginLabelStyle = TextStyle(
   color: kTealColor,
   fontWeight: FontWeight.bold,
-  fontFamily: 'CM Sans Serif',
+  fontFamily: 'Nunito',
 );
 
 final kBottomNavBarTextStyle = TextStyle(
   fontSize: 22.0,
   color: kTealColor,
-  fontFamily: 'CM Sans Serif',
+  fontFamily: 'Nunito',
 );
 
 final kOnBoardingTitleStyle = TextStyle(
   color: kTealColor,
-  fontFamily: 'CM Sans Serif',
+  fontFamily: 'Nunito',
   fontSize: 26.0,
   height: 1.5,
 );
@@ -67,7 +69,7 @@ final kOnBoardingSubtitleStyle = TextStyle(
 );
 
 final kNavyBarTextStyle = TextStyle(
-  fontFamily: 'CM Sans Serif',
+  fontFamily: 'Nunito',
   fontSize: 18.0,
   height: 1.2,
 );

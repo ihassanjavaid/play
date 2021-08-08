@@ -38,6 +38,7 @@ dependencies:
   bottom_navy_bar: ^6.0.0
   youtube_player_flutter: ^8.0.0
   material_floating_search_bar: ^0.3.4
+  flutter_login: ^2.2.1
 
 dev_dependencies:
   flutter_test:
@@ -76,3 +77,6 @@ flutter:
     - family: CM Sans Serif
       fonts:
         - asset: assets/fonts/cm_sans_serif_2012.ttf
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf

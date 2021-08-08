@@ -40,74 +40,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
       waitForLogIn();
     }
     else if (widget.loadingType == LoadingType.SIGNUP){
-      waitForRegistration();
+      //waitForRegistration();
     }
   }
 
-  String removeSpaces(String email) {
-    if (email == null) return 'null';
-    return email.replaceAll(' ', '');
-  }
 
   Future<void> waitForLogIn() async {
-    try {
-      final SharedPreferences pref =
-          await SharedPreferences.getInstance();
-      await widget.auth.loginUserWithEmailAndPassword(
-          email: removeSpaces(widget.email), password: widget.password);
-      if (widget.rememberMe) {
-        await pref.setString('email', removeSpaces(widget.email));
-      }
-      /*
-            * Set name always in shared prefs
-            * so that if remember is checked, it is saved in shared prefs
-            * if remember be is not checked, the name is saved, and overwritten by next time sign-in
-            */
-      widget.userData = await widget.firestoreUserService.getUserData(email: widget.email);
-      await pref.setString('displayName', widget.userData.displayName);
-      /* Set UID in shared prefs so that it can be accessed in community forums*/
 
-      widget.fbUser = (await widget.auth.getCurrentUser())!;
-      await pref.setString('uid', widget.fbUser!.uid);
-      // Pop all the previous screens
-      Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
-      // Navigate to the main screen
-      Navigator.pushNamed(context, HomeScreen.id);
-    } catch (e) {
-      AlertWidget()
-          .generateAlert(
-          context: context,
-          title: 'Invalid Credentials!',
-          description: e.toString())
-          .show();
-      print(e);
-    }
   }
 
   Future<void> waitForRegistration() async {
-    try {
-      // register user in Firebase Auth
-      await widget.auth.registerUser(
-          email: removeSpaces(widget.email), password: widget.password);
-      // register user in Firebase Firestore
-      await widget.firestoreUserService.registerUserInFirebase(
-          displayName: widget.name, email: widget.email);
-      // register user in device locally - shared prefs
-      final SharedPreferences pref =
-      await SharedPreferences.getInstance();
-      await pref.setString('email', removeSpaces(widget.email));
-      await pref.setString('displayName', widget.name);
-      // Pop all the previous screens
-      Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
-      // Navigate to the main screen
-      Navigator.pushNamed(context, HomeScreen.id);
-    } catch (e) {
-      AlertWidget()
-          .generateAlert(
-          context: context, title: "Error", description: e.toString())
-          .show();
-      print(e);
-    }
+
   }
 
   @override
