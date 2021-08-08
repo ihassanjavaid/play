@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:play_app/screens/login_screen.dart';
 import 'package:play_app/services/auth_service.dart';
 import 'package:play_app/utilities/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'on_boarding_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String id = "profile_screen";
@@ -19,94 +18,206 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: kScaffoldBackgroundColor,
       child: Column(
-        children: [
+        children: <Widget>[
           Container(
-            padding: EdgeInsets.only(top: 48),
-            child: Text(
-                "${DateFormat('EEEE').format(DateTime.now())}, ${DateFormat('jm').format(DateTime.now())}",
-                style: kOnBoardingTitleStyle.copyWith(fontSize: 30.0)),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 30),
-            child: CircleAvatar(
-              backgroundColor: kTealColor.withOpacity(0.75),
-              radius: 80,
-              child: Icon(
-                Icons.person,
-                color: kTealColor.withOpacity(0.55),
-                size: 80,
-              ),
-            ),
-          ),
-          FutureBuilder(
-            future: _getUserName(),
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-              if (!snapshot.hasData) {
-                return Text('');
-              } else {
-                return Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Text(
-                      "Hi, ${snapshot.data.toString()}.",
-                      style: kOnBoardingTitleStyle.copyWith(color: kAmberColor),
-                    ),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [kPurpleColor, Colors.white70])),
+              child: Container(
+                width: double.infinity,
+                height: 350.0,
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            "https://www.pikpng.com/pngl/m/154-1540525_male-user-filled-icon-my-profile-icon-png.png"),
+                        radius: 50.0,
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        "",
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Card(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 5.0),
+                        clipBehavior: Clip.antiAlias,
+                        color: kDarkPurpleColor,
+                        elevation: 5.0,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 22.0),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      "Videos",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text(
+                                      "0",
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.white70,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      "Subscribers",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text(
+                                      "0",
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.white70,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      "Followers",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text(
+                                      "0",
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.white70,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                );
-              }
-            },
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
+                ),
+              )),
+          Container(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
-              child: Text(
-                "This app streams videos\ndirectly from YouTube\nin high quality",
-                style: kOnBoardingTitleStyle.copyWith(color: kTealColor.withOpacity(0.7)),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  // Text(
+                  //   "Bio:",
+                  //   style: TextStyle(
+                  //       color: Colors.white,
+                  //       fontStyle: FontStyle.normal,
+                  //       fontSize: 28.0
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 10.0,
+                  // ),
+                  Text(
+                    'This app streams\npremium content in high definition and live content with ultra low latency.',
+                    style: TextStyle(
+                        fontSize: 24.0,
+                        color: Colors.white,
+                        fontFamily: 'Nunito'),
+                  )
+                  // ),
+                ],
               ),
             ),
           ),
-          buildAmberDivider(),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
-              child: GestureDetector(
-                onTap: () async {
+          SizedBox(
+            height: 20.0,
+          ),
+          Container(
+            width: 300.00,
+            child: RaisedButton(
+                onPressed: () async {
                   Auth _auth = Auth();
-                  final SharedPreferences pref =
+                  SharedPreferences pref =
                       await SharedPreferences.getInstance();
                   await pref.setString('email', "");
                   await pref.setString('displayName', "User");
                   await pref.setString('uid', "");
-                  try{
+                  try {
                     _auth.signOut();
-                  }
-                  catch (e) {}
+                  } catch (e) {}
                   _auth.signOut();
-                  Navigator.pushNamed(context, OnBoardingScreen.id);
+                  Navigator.pushNamed(context, LoginScreen.id);
                 },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(80.0)),
+                elevation: 0.0,
+                padding: EdgeInsets.all(0.0),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
+                        colors: [Colors.white, Colors.white70]),
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  child: Container(
+                    constraints:
+                        BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
+                    alignment: Alignment.center,
+                    child: Text(
                       "Sign Out",
-                      style: kOnBoardingTitleStyle.copyWith(color: kTealColor),
+                      style: TextStyle(
+                          color: kDarkPurpleColor,
+                          fontSize: 26.0,
+                          fontFamily: 'Nunito'),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, top: 2.0),
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        color: kTealColor,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
+                  ),
+                )),
           ),
         ],
       ),

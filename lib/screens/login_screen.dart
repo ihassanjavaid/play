@@ -5,8 +5,6 @@ import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:play_app/models/user_data.dart';
 import 'package:play_app/screens/home_screen.dart';
-import 'package:play_app/screens/loading_screen.dart';
-import 'package:play_app/screens/registration_screen.dart';
 import 'package:play_app/services/auth_service.dart';
 import 'package:play_app/services/firestore_user_service.dart';
 import 'package:play_app/utilities/constants.dart';

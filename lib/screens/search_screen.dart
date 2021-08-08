@@ -51,12 +51,12 @@ class BuildSearchBar extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 22.0, left: 12),
+                  padding: const EdgeInsets.only(top: 31.0, left: 12),
                   child: Container(
                     child: Text(
                       'Play',
                       style:
-                      kOnBoardingTitleStyle.copyWith(fontSize: 38),
+                      kOnBoardingTitleStyle.copyWith(fontSize: 48, color: Colors.white),
                     ),
                   ),
                 )
@@ -66,11 +66,11 @@ class BuildSearchBar extends StatelessWidget {
               height: size.height / 2,
               width: size.width,
               child: FloatingSearchBar(
-                backgroundColor: kScaffoldBackgroundColor,
+                //backgroundColor: kScaffoldBackgroundColor,
                 backdropColor: kScaffoldBackgroundColor,
-                iconColor: kTealColor,
-                accentColor: kTealColor,
-                hint: 'Search YouTube',
+                iconColor: kLightPurpleColor,
+                accentColor: kLightPurpleColor,
+                hint: 'Search Videos',
                 scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
                 transitionDuration: const Duration(milliseconds: 800),
                 transitionCurve: Curves.easeInOut,

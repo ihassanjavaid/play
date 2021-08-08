@@ -44,8 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   
   void getScreen(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    bodyWidget = Container();
     switch (currentIndex){
       case 0:
         setState(() {
@@ -85,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    if (currentIndex == 0) bodyWidget = Container();
     return Scaffold(
       backgroundColor: kDarkPurpleColor,
       body: bodyWidget,
@@ -122,6 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             onPressed: () {
                               setBottomBarIndex(0);
+                              getScreen(context);
                             },
                             splashColor: Colors.white,
                           ),
@@ -132,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               onPressed: () {
                                 setBottomBarIndex(1);
+                                getScreen(context);
                               }),
                           Container(
                             width: size.width * 0.20,
@@ -143,6 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               onPressed: () {
                                 setBottomBarIndex(2);
+                                getScreen(context);
                               }),
                           IconButton(
                               icon: Icon(
@@ -151,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               onPressed: () {
                                 setBottomBarIndex(3);
+                                getScreen(context);
                               }),
                         ],
                       ),

@@ -25,11 +25,30 @@ class LikedVideos extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: kScaffoldBackgroundColor,
-      child: Center(
-        child: Text(
-          'No Liked Videos.',
-          style: kOnBoardingTitleStyle,
-        ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 50,
+            left: 24,
+            child: Text(
+              'Watch Later',
+              style: kOnBoardingTitleStyle.copyWith(color: Colors.white, fontSize: 40),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 28.0),
+              child: Text(
+                'No Saved Videos.',
+                style: TextStyle(
+                  fontFamily: 'Nunito',
+                  color: kLightPurpleColor,
+                  fontSize: 22
+                ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
