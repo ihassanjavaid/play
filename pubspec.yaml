@@ -37,6 +37,7 @@ dependencies:
   firebase_core: ^1.4.0
   bottom_navy_bar: ^6.0.0
   youtube_player_flutter: ^8.0.0
+  material_floating_search_bar: ^0.3.4
 
 dev_dependencies:
   flutter_test:
