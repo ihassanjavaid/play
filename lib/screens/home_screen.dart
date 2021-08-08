@@ -78,6 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    if (_currentIndex == 0) bodyWidget = buildHomeScreen(size);
     return Scaffold(
       floatingActionButton: buildFloatingActionButton(),
       backgroundColor: kScaffoldBackgroundColor,
@@ -151,192 +152,206 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  SingleChildScrollView buildHomeScreen(Size size) {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      physics: AlwaysScrollableScrollPhysics(),
-      child: Container(
-        //height: size.height,
-        //color: kScaffoldBackgroundColor,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Color(0xffe8e0d1), kScaffoldBackgroundColor],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.01, 0.2])),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 32),
-                        child: Container(
-                          height: 80,
-                          width: 80,
-                          child: Image.asset(
-                              'assets/images/logo_transparent.png'),
+  Widget buildHomeScreen(Size size) {
+    return FutureBuilder(
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (_channel == null){
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: kTealColor,
+              color: kAmberColor,
+            ),
+          );
+        }
+        else {
+          return SingleChildScrollView(
+            controller: _scrollController,
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Container(
+              //height: size.height,
+              //color: kScaffoldBackgroundColor,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Color(0xffe8e0d1), kScaffoldBackgroundColor],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: [0.01, 0.2])),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 32),
+                              child: Container(
+                                height: 80,
+                                width: 80,
+                                child: Image.asset(
+                                    'assets/images/logo_transparent.png'),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 22.0, left: 12),
+                              child: Container(
+                                child: Text(
+                                  'Play',
+                                  style:
+                                  kOnBoardingTitleStyle.copyWith(fontSize: 38),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 22.0, left: 12),
-                        child: Container(
-                          child: Text(
-                            'Play',
-                            style:
-                                kOnBoardingTitleStyle.copyWith(fontSize: 38),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 12.0, top: 22),
-                    child: Container(
-                      child: Icon(
-                        Icons.search,
-                        size: 36,
-                        color: kAmberColor,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              buildAmberDivider(),
-              FutureBuilder(
-                future: _getUserName(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Text('');
-                  } else {
-                    return GestureDetector(
-                      onTap: () {
-                        AlertWidget()
-                            .generateContiueWatchingAlert(
-                            context: context,
-                            title: "Nothing to Show!",
-                            description: 'No videos found in history to show. Please continue to Homepage.')
-                            .show();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12.0, top: 0.0),
-                        child: Container(
-                          child: Text(
-                            'Hi ${snapshot.data.toString()},\nContinue Watching >',
-                            style: kOnBoardingTitleStyle,
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-              buildAmberDivider(),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 0.0),
-                child: Container(
-                  child: Text(
-                    'Featured',
-                    style: kOnBoardingTitleStyle,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0, vertical: 12.0),
-                child: Material(
-                  elevation: 8.0,
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: size.height / 4,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: FractionallySizedBox(
-                            widthFactor: 1.2,
-                            child: Image.network(
-                              _channel!.videos![4].thumbnailUrl!,
-                              fit: BoxFit.fitWidth,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12.0, top: 22),
+                          child: Container(
+                            child: Icon(
+                              Icons.search,
+                              size: 36,
+                              color: kAmberColor,
                             ),
                           ),
+                        )
+                      ],
+                    ),
+                    buildAmberDivider(),
+                    FutureBuilder(
+                      future: _getUserName(),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                        if (!snapshot.hasData) {
+                          return Text('');
+                        } else {
+                          return GestureDetector(
+                            onTap: () {
+                              AlertWidget()
+                                  .generateContiueWatchingAlert(
+                                  context: context,
+                                  title: "Nothing to Show!",
+                                  description: 'No videos found in history to show. Please continue to Homepage.')
+                                  .show();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12.0, top: 0.0),
+                              child: Container(
+                                child: Text(
+                                  'Hi ${snapshot.data.toString()},\nContinue Watching >',
+                                  style: kOnBoardingTitleStyle,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    buildAmberDivider(),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0, top: 0.0),
+                      child: Container(
+                        child: Text(
+                          'Featured',
+                          style: kOnBoardingTitleStyle,
                         ),
                       ),
-                      Positioned(
-                        bottom: 16,
-                        left: 16,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.0),
-                            color: kAmberColor,
-                          ),
-                          height: 42,
-                          width: 120,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(top: 2.0, left: 8.0),
-                            child: Text('Thoughts...',
-                                style: kOnBoardingTitleStyle.copyWith(
-                                    color: kScaffoldBackgroundColor,
-                                    fontSize: 22)),
-                          ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 12.0),
+                      child: Material(
+                        elevation: 8.0,
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: size.height / 4,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: FractionallySizedBox(
+                                  widthFactor: 1.2,
+                                  child: Image.network(
+                                    _channel!.videos![4].thumbnailUrl!,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 16,
+                              left: 16,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  color: kAmberColor,
+                                ),
+                                height: 42,
+                                width: 120,
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(top: 2.0, left: 8.0),
+                                  child: Text('Thoughts...',
+                                      style: kOnBoardingTitleStyle.copyWith(
+                                          color: kScaffoldBackgroundColor,
+                                          fontSize: 22)),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 16,
+                              left: 146,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  color: kAmberColor,
+                                ),
+                                height: 42,
+                                width: 42,
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(top: 2.8, left: 9.8),
+                                  child: Text('E1',
+                                      style: kOnBoardingTitleStyle.copyWith(
+                                          color: kScaffoldBackgroundColor,
+                                          fontSize: 22)),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
                       ),
-                      Positioned(
-                        bottom: 16,
-                        left: 146,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.0),
-                            color: kAmberColor,
-                          ),
-                          height: 42,
-                          width: 42,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(top: 2.8, left: 9.8),
-                            child: Text('E1',
-                                style: kOnBoardingTitleStyle.copyWith(
-                                    color: kScaffoldBackgroundColor,
-                                    fontSize: 22)),
-                          ),
+                    ),
+                    buildAmberDivider(),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0, top: 0.0),
+                      child: Container(
+                        child: Text(
+                          'New Arrivals',
+                          style: kOnBoardingTitleStyle,
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    ),
+                    Container(
+                      height: 1000,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        itemCount: _channel!.videos!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          Video video = _channel!.videos![index];
+                          return _buildVideo(video);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              buildAmberDivider(),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 0.0),
-                child: Container(
-                  child: Text(
-                    'New Arrivals',
-                    style: kOnBoardingTitleStyle,
-                  ),
-                ),
-              ),
-              Container(
-                height: 1000,
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: _channel!.videos!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Video video = _channel!.videos![index];
-                    return _buildVideo(video);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        }
+      },
     );
   }
 
