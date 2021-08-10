@@ -32,12 +32,17 @@ class _PreviewPageState extends State<PreviewPage> {
     dateTimeString = formatter.format(dateTime);
 
     _controller = VideoPlayerController.network(
-        '$muxStreamBaseUrl/$playbackId.$videoExtension')
-      ..initialize().then((_) {
-        setState(() {});
-      });
+        '$muxStreamBaseUrl/$playbackId.$videoExtension');
+  }
 
-    _controller!.play();
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    await _controller?.initialize();
+    /*setState(() {});*/
+    _controller?.play();
+    setState(() {});
   }
 
   @override
@@ -48,9 +53,7 @@ class _PreviewPageState extends State<PreviewPage> {
           Navigator.pop(context);
         },
         backgroundColor: kPurpleColor,
-        child: Icon(
-          Icons.home
-        ),
+        child: Icon(Icons.home),
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -77,24 +80,79 @@ class _PreviewPageState extends State<PreviewPage> {
                 ),
                 _controller!.value.isInitialized
                     ? AspectRatio(
-                  aspectRatio: _controller!.value.aspectRatio,
-                  child: VideoPlayer(_controller!),
-                )
-                    : AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Container(
-                    color: Colors.black,
-                    width: double.maxFinite,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          CustomColors.muxPink,
+                        aspectRatio: _controller!.value.aspectRatio,
+                        child: Stack(
+                          children: [
+                            VideoPlayer(_controller!),
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Row(
+                                children: [
+                                  VideoPlayerControl(
+                                    icon: Icons.play_arrow,
+                                    callback: () {
+                                      _controller?.play();
+                                    },
+                                  ),
+                                  VideoPlayerControl(
+                                    icon: Icons.pause,
+                                    callback: () {
+                                      _controller?.pause();
+                                    },
+                                  ),
+                                  VideoPlayerControl(
+                                    icon: Icons.stop,
+                                    callback: () {
+                                      _controller?.seekTo(Duration(seconds: 0));
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    VideoPlayerControl(
+                                      icon: Icons.fast_rewind,
+                                      callback: () async {
+                                        final pos = await _controller?.position;
+                                        _controller?.seekTo(Duration(seconds: pos!.inSeconds - 3));
+                                        },
+                                    ),
+                                    VideoPlayerControl(
+                                      icon: Icons.fast_forward,
+                                      callback: () async {
+                                        final pos = await _controller?.position;
+                                        _controller?.seekTo(Duration(seconds: pos!.inSeconds + 3));
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                        strokeWidth: 2,
+                      )
+                    : AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: Container(
+                          color: Colors.black,
+                          width: double.maxFinite,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                kPurpleColor,
+                              ),
+                              strokeWidth: 2,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
               ],
             ),
             Padding(
@@ -139,6 +197,29 @@ class _PreviewPageState extends State<PreviewPage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class VideoPlayerControl extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback callback;
+
+  const VideoPlayerControl({
+    Key? key,
+    required this.icon,
+    required this.callback,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      child: Icon(
+        this.icon,
+        color: Colors.white,
+        size: 30,
+      ),
+      onTap: callback,
     );
   }
 }
