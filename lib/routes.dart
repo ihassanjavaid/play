@@ -7,11 +7,12 @@ import 'package:play_app/screens/on_boarding_screen.dart';
 import 'package:play_app/screens/profile_screen.dart';
 import 'package:play_app/screens/registration_screen.dart';
 import 'package:play_app/screens/search_screen.dart';
+import 'package:play_app/services/auto_login_service.dart';
 
 class DefaultPlayRoute{
 
   static Map<String, WidgetBuilder> _defaultRoute = {
-    //AutoLoginService.id:(context) => AutoLoginService(),
+    AutoLoginService.id:(context) => AutoLoginService(),
     HomeScreen.id: (context) => HomeScreen(),
     LoginScreen.id: (context) => LoginScreen(),
     RegistrationScreen.id: (context) => RegistrationScreen(),

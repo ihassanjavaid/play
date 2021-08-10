@@ -59,6 +59,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               }
             },
           ),
+          FutureBuilder(
+            future: _getUseremail(),
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              if (!snapshot.hasData) {
+                return Text('');
+              } else {
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Text(
+                      "${snapshot.data.toString()}.",
+                      style: kOnBoardingTitleStyle.copyWith(color: kAmberColor.withOpacity(0.75), fontSize: 20),
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
           Align(
             alignment: Alignment.centerLeft,
             child: Padding(
@@ -79,15 +98,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Auth _auth = Auth();
                   final SharedPreferences pref =
                       await SharedPreferences.getInstance();
-                  await pref.setString('email', "");
+                  await pref.setString('email', '');
                   await pref.setString('displayName', "User");
                   await pref.setString('uid', "");
                   try{
                     _auth.signOut();
+                    Navigator.pushNamed(context, OnBoardingScreen.id);
                   }
                   catch (e) {}
-                  _auth.signOut();
-                  Navigator.pushNamed(context, OnBoardingScreen.id);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -132,5 +150,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _name = _name.substring(0, _name.indexOf(' '));
     }
     return _name;
+  }
+
+  Future<String> _getUseremail() async {
+    String? _email;
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    _email = pref.getString('email');
+    // to display only first name
+    if (_email != null)
+      return _email;
+    return '';
   }
 }

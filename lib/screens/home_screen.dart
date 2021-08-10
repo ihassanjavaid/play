@@ -6,6 +6,7 @@ import 'package:play_app/screens/likes_screen.dart';
 import 'package:play_app/screens/profile_screen.dart';
 import 'package:play_app/screens/search_screen.dart';
 import 'package:play_app/screens/video_screen.dart';
+import 'package:play_app/services/firestore_video_service.dart';
 import 'package:play_app/services/youtube_api_service.dart';
 import 'package:play_app/utilities/constants.dart';
 import 'package:play_app/widgets/alert_widget.dart';
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Channel? _channel;
   bool _isLoading = false;
+  FirestoreVideoService _firestoreVideoService = FirestoreVideoService();
 
   final ScrollController _scrollController = ScrollController();
 
@@ -425,6 +427,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              Positioned(
+                bottom: 22,
+                right: 12,
+                child: InkWell(
+                  onTap: () {
+                    print("${video.title} liked");
+                    try{
+                      _firestoreVideoService.likeVideo(video);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content:
+                          Text(
+                            "Liked: ${video.title}",
+                            style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
+                          )));
+                      setState(() {
+                        video.liked = true;
+                      });
+                    } catch (e) {
+                      debugPrint(e.toString());
+                    }
+                  },
+                  child: Icon(
+                    video.liked! ? Icons.favorite : Icons.favorite_border,
+                    color: kAmberColor,
+                    size: 30,
+                  ),
+                ),
+              )
               /*Positioned(
                 bottom: 16,
                 left: 146,
