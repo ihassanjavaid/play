@@ -23,6 +23,16 @@ class Video {
     );
   }
 
+  Map<String, dynamic> toMap(){
+    return {
+      'id': id,
+      'title': title,
+      'thumbnailUrl': thumbnailUrl,
+      'channelTitle': channelTitle,
+      'liked': liked
+    };
+  }
+
   factory Video.fromFirebase(Map<String, dynamic> doc) {
     return Video(
         id: doc['id'],

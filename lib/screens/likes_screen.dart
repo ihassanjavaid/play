@@ -66,7 +66,7 @@ class _LikedVideosState extends State<LikedVideos> {
               height: MediaQuery.of(context).size.height * 0.75,
               child: FutureBuilder(
                 future: _getLikedVideos(),
-                builder: (context, AsyncSnapshot<List<QueryDocumentSnapshot>> snapshot) {
+                builder: (context, AsyncSnapshot<List<QueryDocumentSnapshot>?> snapshot) {
                   if (!snapshot.hasData){
                     return Center(
                       child: Container(
@@ -104,7 +104,7 @@ class _LikedVideosState extends State<LikedVideos> {
     );
   }
 
-  Future<List<QueryDocumentSnapshot<Object?>>> _getLikedVideos() async {
+  Future<List<QueryDocumentSnapshot<Object?>>?> _getLikedVideos() async {
     return await _firestoreVideoService.getLikedVideos();
   }
 

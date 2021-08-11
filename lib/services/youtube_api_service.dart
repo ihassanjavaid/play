@@ -48,7 +48,7 @@ class YoutubeAPIService{
     Map<String, String> parameters = {
       'part': 'snippet',
       'playlistId': playlistId!,
-      'maxResults': '8',
+      'maxResults': '20',
       'pageToken': _nextPageToken,
       'key': API_KEY,
     };

@@ -167,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
         else {
           return SingleChildScrollView(
-            controller: _scrollController,
+            //controller: _scrollController,
             physics: AlwaysScrollableScrollPhysics(),
             child: Container(
               //height: size.height,
@@ -230,13 +230,24 @@ class _HomeScreenState extends State<HomeScreen> {
                           return Text('');
                         } else {
                           return GestureDetector(
-                            onTap: () {
-                              AlertWidget()
+                            onTap: () async {
+
+                              Video? lastWatched = await _firestoreVideoService.getLastWatchedVideo();
+                              if (lastWatched == null) {
+                                AlertWidget()
                                   .generateContiueWatchingAlert(
                                   context: context,
                                   title: "Nothing to Show!",
                                   description: 'No videos found in history to show. Please continue to Homepage.')
                                   .show();
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => VideoScreen(video: lastWatched),
+                                  ),
+                                );
+                              }
                             },
                             child: Padding(
                               padding: const EdgeInsets.only(left: 12.0, top: 0.0),
@@ -339,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Container(
                       height: 1000,
                       child: ListView.builder(
-                        controller: _scrollController,
+                        //controller: _scrollController,
                         itemCount: _channel!.videos!.length,
                         itemBuilder: (BuildContext context, int index) {
                           Video video = _channel!.videos![index];
@@ -382,7 +393,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        onTap: () {
+        onTap: (){
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -432,23 +443,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 right: 12,
                 child: InkWell(
                   onTap: () {
-                    print("${video.title} liked");
-                    try{
-                      _firestoreVideoService.likeVideo(video);
+                    if (!video.liked!) {
+                      print("${video.title} liked");
+                      try{
+                        _firestoreVideoService.likeVideo(video);
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content:
-                          Text(
-                            "Liked: ${video.title}",
-                            style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
-                          )));
-                      setState(() {
-                        video.liked = true;
-                      });
-                    } catch (e) {
-                      debugPrint(e.toString());
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content:
+                            Text(
+                              "Liked: ${video.title}",
+                              style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
+                            )));
+                        setState(() {
+                          video.liked = true;
+                        });
+                      } catch (e) {
+                        debugPrint(e.toString());
+                      }
                     }
-                  },
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content:
+                        Text(
+                          "Video already in \'Liked Videos\'",
+                          style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
+                        )));
+                    },
                   child: Icon(
                     video.liked! ? Icons.favorite : Icons.favorite_border,
                     color: kAmberColor,

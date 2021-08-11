@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:play_app/models/video_model.dart';
+import 'package:play_app/services/firestore_video_service.dart';
 import 'package:play_app/utilities/constants.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -15,6 +16,7 @@ class VideoScreen extends StatefulWidget {
 
 class _VideoScreenState extends State<VideoScreen> {
   YoutubePlayerController? _controller;
+  FirestoreVideoService _firestoreVideoService = FirestoreVideoService();
 
   @override
   void initState() {
@@ -27,6 +29,14 @@ class _VideoScreenState extends State<VideoScreen> {
         controlsVisibleAtStart: true,
       ),
     );
+  }
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (widget.video != null){
+      await _firestoreVideoService.addLastWatchedVideo(widget.video!);
+    }
   }
 
   @override
