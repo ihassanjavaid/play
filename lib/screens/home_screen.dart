@@ -12,6 +12,7 @@ import 'package:play_app/utilities/constants.dart';
 import 'package:play_app/widgets/alert_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:onboarding_overlay/onboarding_overlay.dart';
+import 'package:shimmer/shimmer.dart';
 
 class OverLay extends StatelessWidget {
   OverLay({Key? key}) : super(key: key);
@@ -266,10 +267,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 0.0, left: 12),
                                 child: Container(
-                                  child: Text(
-                                    'Play',
-                                    style:
-                                    kOnBoardingTitleStyle.copyWith(fontSize: 38),
+                                  child: Shimmer.fromColors(
+                                    baseColor: kTealColor, 
+                                    highlightColor: kTealColor.withOpacity(0.5),
+                                    direction: ShimmerDirection.ltr,
+                                    period: Duration(seconds: 3),
+                                    child: Text(
+                                      'Play',
+                                      style:
+                                      kOnBoardingTitleStyle.copyWith(fontSize: 38),
+                                    ),
                                   ),
                                 ),
                               )
