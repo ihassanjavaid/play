@@ -13,7 +13,7 @@ class DefaultPlayRoute{
 
   static Map<String, WidgetBuilder> _defaultRoute = {
     AutoLoginService.id:(context) => AutoLoginService(),
-    HomeScreen.id: (context) => HomeScreen(),
+    HomeScreen.id: (context) => OverLay(),
     LoginScreen.id: (context) => LoginScreen(),
     RegistrationScreen.id: (context) => RegistrationScreen(),
     //LoadingScreen.id: (context) => LoadingScreen()

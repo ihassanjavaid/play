@@ -11,10 +11,50 @@ import 'package:play_app/services/youtube_api_service.dart';
 import 'package:play_app/utilities/constants.dart';
 import 'package:play_app/widgets/alert_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:onboarding_overlay/onboarding_overlay.dart';
+
+class OverLay extends StatelessWidget {
+  OverLay({Key? key}) : super(key: key);
+
+  final List<FocusNode> overlayKeys = <FocusNode>[
+    FocusNode(),
+    FocusNode(),
+    FocusNode(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+
+    final List<OnboardingStep> steps = [OnboardingStep(
+      focusNode: overlayKeys[0],
+      title: "Hi",
+      titleTextStyle: Theme.of(context).textTheme.headline5!.copyWith(
+        color: Theme.of(context).canvasColor,
+      ),
+      bodyText:
+      '''Check this out''',
+      bodyTextStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
+        color: Theme.of(context).canvasColor,
+      ),
+      hasLabelBox: false,
+      fullscreen: true,
+      overlayColor: Theme.of(context).primaryColorDark.withOpacity(0.8),
+      hasArrow: false,
+    ),];
+
+    return Onboarding(
+      steps: steps,
+      child: HomeScreen(nodes: overlayKeys,),
+    );
+  }
+}
+
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key, required this.nodes,}) : super(key: key);
+
+  final List<FocusNode> nodes;
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -23,21 +63,28 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   late Widget bodyWidget;
+  bool showContinueWatching = false;
 
   Channel? _channel;
   bool _showFloatingButton = false;
   FirestoreVideoService _firestoreVideoService = FirestoreVideoService();
 
+  List<String?> likedVidsIds = [];
+
   final ScrollController _scrollController = ScrollController();
 
   String channelID = 'UCVD09YmuX1QwX4XSyI84q5g';
 
+
+
   @override
   void initState() {
-    super.initState();
     _initChannel();
+    super.initState();
+
   }
-  
+
+
   void getScreen(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     //bodyWidget = buildHomeScreen(size);
@@ -72,15 +119,27 @@ class _HomeScreenState extends State<HomeScreen> {
   _initChannel() async {
     Channel channel =
         await YoutubeAPIService.instance.fetchChannel(channelId: channelID);
+    List? likedVds = await _firestoreVideoService.getLikedVideos();
+    likedVds?.forEach((element) {
+      likedVidsIds.add(element['id']);
+    });
+
     setState(() {
       this._channel = channel;
     });
+
+
   }
 
   @override
   Widget build(BuildContext context) {
+
+
+
     Size size = MediaQuery.of(context).size;
     if (_currentIndex == 0) bodyWidget = buildHomeScreen(size);
+
+
     return Scaffold(
       floatingActionButton: buildFloatingActionButton(),
       backgroundColor: kScaffoldBackgroundColor,
@@ -141,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: FloatingActionButton(
         onPressed: () {
           _scrollController.animateTo(0,
-              duration: Duration(milliseconds: 500),
+              duration: Duration(milliseconds: 1000),
               curve: Curves.fastOutSlowIn);
         },
         mini: true,
@@ -166,6 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
         else {
+
           return ListView.builder(
             controller: _scrollController,
             itemBuilder: (context, index) {
@@ -173,16 +233,17 @@ class _HomeScreenState extends State<HomeScreen> {
               _channel?.videos?.forEach((video) {
                 videos.add(_buildVideo(video));
               });
-
               return Container(
                 //height: size.height,
                 //color: kScaffoldBackgroundColor,
                 decoration: BoxDecoration(
-                    gradient: LinearGradient(
+                    /*gradient: LinearGradient(
                         colors: [Color(0xffe8e0d1), kScaffoldBackgroundColor, Colors.white],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        stops: [0.01, 0.05, 0.1])),
+                        stops: [0.01, 0.05, 0.1])*/
+                  color: kScaffoldBackgroundColor
+                ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
@@ -217,17 +278,68 @@ class _HomeScreenState extends State<HomeScreen> {
                           Padding(
                             padding: const EdgeInsets.only(right: 12.0, top: 8),
                             child: Container(
-                              child: Icon(
-                                Icons.search,
-                                size: 36,
-                                color: kAmberColor,
+                              child: Focus(
+                                focusNode: widget.nodes.first,
+                                child: InkWell(
+                                  onTap: () async {
+                                    if (showContinueWatching == false) {
+                                      setState(() {
+                                        showContinueWatching = true;
+
+                                      });
+
+                                      return;
+                                    }
+                                    Video? lastWatched = await _firestoreVideoService.getLastWatchedVideo();
+                                    if (lastWatched == null) {
+                                      AlertWidget()
+                                          .generateContiueWatchingAlert(
+                                          context: context,
+                                          title: "Nothing to Show!",
+                                          description: 'No videos found in history to show. Please continue to Homepage.')
+                                          .show();
+                                      setState(() {
+                                        showContinueWatching = false;
+
+                                      });
+                                    } else {
+
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => VideoScreen(video: lastWatched),
+                                        ),
+                                      );
+                                      setState(() {
+                                        showContinueWatching = false;
+                                      });
+                                    }
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.history,
+                                        size: 36,
+                                        color: kAmberColor,
+                                        semanticLabel: 'Continue Watching',
+                                      ),
+                                      if (showContinueWatching) AnimatedSwitcher(
+                                        duration: Duration(seconds: 1,),
+                                        child: Text(
+                                          'Continue\nWatching',
+                                          style: kOnBoardingTitleStyle.copyWith(fontSize: 12),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           )
                         ],
                       ),
                       buildAmberDivider(),
-                      FutureBuilder(
+                      /*FutureBuilder(
                         future: _getUserName(),
                         builder:
                             (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -235,31 +347,22 @@ class _HomeScreenState extends State<HomeScreen> {
                             return Text('');
                           } else {
                             return GestureDetector(
-                              onTap: () async {
-
-                                Video? lastWatched = await _firestoreVideoService.getLastWatchedVideo();
-                                if (lastWatched == null) {
-                                  AlertWidget()
-                                      .generateContiueWatchingAlert(
-                                      context: context,
-                                      title: "Nothing to Show!",
-                                      description: 'No videos found in history to show. Please continue to Homepage.')
-                                      .show();
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => VideoScreen(video: lastWatched),
-                                    ),
-                                  );
-                                }
-                              },
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 12.0, top: 0.0),
                                 child: Container(
-                                  child: Text(
-                                    'Hi ${snapshot.data.toString()},\nContinue Watching >',
-                                    style: kOnBoardingTitleStyle,
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Hi, ${snapshot.data.toString()}!\n',
+                                          style: kOnBoardingTitleStyle
+                                        ),
+                                        TextSpan(
+                                            text: 'Continue Watching >',
+                                            style: kOnBoardingTitleStyle
+                                        )
+                                      ]
+                                    ),
                                   ),
                                 ),
                               ),
@@ -267,7 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                         },
                       ),
-                      buildAmberDivider(),
+                      buildAmberDivider(),*/
                       Padding(
                         padding: const EdgeInsets.only(left: 12.0, top: 0.0),
                         child: Container(
@@ -399,6 +502,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildVideo(Video? video) {
+    if (video != null) {
+      if (likedVidsIds.contains(video.id)){
+        video.liked = true;
+      }
+    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(

@@ -38,6 +38,7 @@ dependencies:
   bottom_navy_bar: ^6.0.0
   youtube_player_flutter: ^8.0.0
   material_floating_search_bar: ^0.3.4
+  onboarding_overlay: ^2.1.0
 
 dev_dependencies:
   flutter_test:
