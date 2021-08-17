@@ -40,10 +40,11 @@ dependencies:
   material_floating_search_bar: ^0.3.4
   flutter_login: ^2.2.1
   # plugins for mux
-  dio: ^4.0.0
-  video_player: ^2.1.12
-  intl: ^0.17.0
-  adaptive_dialog: ^1.1.0
+#  dio: ^4.0.0
+#  video_player: ^2.1.12
+#  intl: ^0.17.0
+#  adaptive_dialog: ^1.1.0
+  better_player: ^0.0.73
 
 dev_dependencies:
   flutter_test:

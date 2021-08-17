@@ -8,6 +8,7 @@ import 'package:play_app/screens/preview_page.dart';
 import 'package:play_app/screens/profile_screen.dart';
 import 'package:play_app/screens/search_screen.dart';
 import 'package:play_app/services/mux_client.dart';
+import 'package:play_app/services/video_streaming_service.dart';
 import 'package:play_app/services/youtube_api_service.dart';
 import 'package:play_app/utilities/constants.dart';
 import 'package:play_app/widgets/alert_widget.dart';
@@ -26,22 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
   late Widget bodyWidget;
 
-  final ScrollController _scrollController = ScrollController();
-
-  String channelID = 'UCVD09YmuX1QwX4XSyI84q5g';
-
-  MUXClient _muxClient = MUXClient();
-
-  TextEditingController? _textControllerVideoURL;
-  FocusNode? _textFocusNodeVideoURL;
-
-  @override
-  void initState() {
-    super.initState();
-    _muxClient.initializeDio();
-    _textControllerVideoURL = TextEditingController(text:demoVideoUrl);
-    _textFocusNodeVideoURL = FocusNode();
-  }
+  int numOfVideos = VideoStreamingService.getNumOfVids;
+  List imagesList = VideoStreamingService.getImages();
+  List videosList = VideoStreamingService.getVideos();
 
   setBottomBarIndex(index) {
     setState(() {
@@ -86,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: kDarkPurpleColor,
       body: bodyWidget,
       bottomNavigationBar: Container(
-      height: size.height/6,
+      height: size.height/ 9.5,
         child: Stack(
           children: [
             Positioned(
@@ -113,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 .generateUploadVideoDialog(
                                 context: context,
                                 title: "Upload Video",
-                                description: "Please paste the URL of the video to upload:").show();
+                                description: "Please select the banner and the video, and then tap upload.").show();
                           }),
                     ),
                     Container(
@@ -204,69 +192,144 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         Container(
-            height: size.height /2,
+            height: size.height * 0.72,
             width: size.width,
             child: Container(
-              child: FutureBuilder<AssetData>(
-                future: _muxClient.getAssetList(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    AssetData? assetData = snapshot.data;
-                    int length = assetData!.data!.length;
-
-                    return ListView.separated(
-                      physics: BouncingScrollPhysics(),
-                      itemCount: length,
-                      itemBuilder: (context, index) {
-                        String? dateTimeToParse = assetData.data![index]!.createdAt;
-                        DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
-                            int.parse(dateTimeToParse!) * 1000);
-                        DateFormat formatter = DateFormat.yMd().add_jm();
-                        String dateTimeString = formatter.format(dateTime);
-
-                        String? currentStatus = assetData.data![index]!.status;
-                        bool isReady = currentStatus == 'ready';
-
-                        String? playbackId = isReady
-                            ? assetData.data![index]!.playbackIds![0]!.id
-                            : null;
-
-                        String? thumbnailURL = isReady
-                            ? '$muxImageBaseUrl/$playbackId/$imageTypeSize'
-                            : null;
-
-                        return VideoTile(
-                          assetData: assetData.data![index]!,
-                          thumbnailUrl: thumbnailURL!,
-                          isReady: isReady,
-                          dateTimeString: dateTimeString,
-                        );
-                      },
-                      separatorBuilder: (_, __) => SizedBox(
-                        height: 16.0,
-                      ),
-                    );
-                  }
-                  else {
-                    return Container(
-                      child: Center(
-                        child: Text(
-                          'Sorry,\nNo videos present',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Nunito',
-                              fontSize: 28
-                          ),
-                        ),
-                      ),
-                    );
-                  }
+              child: ListView.builder(
+                itemCount: videosList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _buildVideo(imagesList[index]);
                 },
+
               ),
             )
         ),
       ],
     );
+  }
+
+  Widget _buildVideo(String image) {
+    /*if (video != null) {
+      if (likedVidsIds.contains(video.id)){
+        video.liked = true;
+      }
+    }*/
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0),
+      child: GestureDetector(
+        onTap: (){
+          /*Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => VideoScreen(video: video!),
+            ),
+          );*/
+          Navigator.push(context, MaterialPageRoute(builder:
+           (context) => PreviewPage(videoUrl: getVideoUrl(image))
+          ));
+        },
+        child: Material(
+          elevation: 8.0,
+          borderRadius: BorderRadius.circular(12.0),
+          child: Stack(
+            children: [
+              Container(
+                height: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: FractionallySizedBox(
+                    widthFactor: 1.2,
+                    child: Image.network(
+                      image,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
+              ),
+              /*Positioned(
+                bottom: 16,
+                left: 16,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: kAmberColor,
+                  ),
+                  height: 42,
+                  width: MediaQuery.of(context).size.width - 200,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2.0, left: 8.0),
+                    child: Text("${video.title!.substring(0, 12)}...",
+                        //overflow: ,
+                        style: kOnBoardingTitleStyle.copyWith(
+                            color: kScaffoldBackgroundColor, fontSize: 22)),
+                  ),
+                ),
+              ),*/
+              Positioned(
+                bottom: 22,
+                right: 12,
+                child: InkWell(
+                  onTap: () {
+                    /*if (!video.liked!) {
+                      print("${video.title} liked");
+                      try{
+                        _firestoreVideoService.likeVideo(video);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content:
+                            Text(
+                              "Liked: ${video.title}",
+                              style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
+                            )));
+                        setState(() {
+                          video.liked = true;
+                        });
+                      } catch (e) {
+                        debugPrint(e.toString());
+                      }
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content:
+                        Text(
+                          "Video already in \'Liked Videos\'",
+                          style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
+                        )));*/
+                  },
+                  child: Icon(
+                    // video.liked! ? Icons.favorite : Icons.favorite_border,
+                    Icons.favorite_border,
+                    color: kPurpleColor,
+                    size: 30,
+                  ),
+                ),
+              )
+              /*Positioned(
+                bottom: 16,
+                left: 146,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: kAmberColor,
+                  ),
+                  height: 42,
+                  width: 42,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2.8, left: 9.8),
+                    child: Text('E1',
+                        style: kOnBoardingTitleStyle.copyWith(
+                            color: kScaffoldBackgroundColor, fontSize: 22)),
+                  ),
+                ),
+              )*/
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String getVideoUrl(String imageUrl) {
+    return imageUrl.replaceFirst('_img', '');
   }
 }
 

@@ -1,52 +1,28 @@
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:play_app/models/common/data.dart';
+import 'package:play_app/services/video_streaming_service.dart';
 import 'package:play_app/utilities/constants.dart';
-import 'package:play_app/widgets/info_tile.dart';
-import 'package:video_player/video_player.dart';
 
 class PreviewPage extends StatefulWidget {
-  final Data assetData;
+  final String videoUrl;
 
-  const PreviewPage({required this.assetData});
+  const PreviewPage({required this.videoUrl});
 
   @override
   _PreviewPageState createState() => _PreviewPageState();
 }
 
 class _PreviewPageState extends State<PreviewPage> {
-  VideoPlayerController? _controller;
-  Data? assetData;
-  String? dateTimeString;
 
-  @override
-  void initState() {
-    super.initState();
+  int numOfVideos = VideoStreamingService.getNumOfVids;
+  List imagesList = VideoStreamingService.getImages();
+  List videosList = VideoStreamingService.getVideos();
 
-    assetData = widget.assetData;
-    String playbackId = assetData!.playbackIds![0]!.id;
-    String? assetDataCreated = assetData!.createdAt;
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
-        int.parse(assetDataCreated!) * 1000);
-    DateFormat formatter = DateFormat.yMd().add_jm();
-    dateTimeString = formatter.format(dateTime);
-
-    _controller = VideoPlayerController.network(
-        '$muxStreamBaseUrl/$playbackId.$videoExtension');
-  }
-
-  @override
-  Future<void> didChangeDependencies() async {
-    super.didChangeDependencies();
-
-    await _controller?.initialize();
-    /*setState(() {});*/
-    _controller?.play();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    debugPrint('Replaced URL: ${widget.videoUrl}');
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -61,165 +37,185 @@ class _PreviewPageState extends State<PreviewPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Stack(
-              children: [
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Container(
-                    color: Colors.black,
-                    width: double.maxFinite,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          CustomColors.muxPink,
-                        ),
-                        strokeWidth: 2,
-                      ),
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Container(
+                color: Colors.black,
+                width: double.maxFinite,
+                /*child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      CustomColors.muxPink,
                     ),
+                    strokeWidth: 2,
+                  ),
+                ),*/
+                child: BetterPlayer.network(
+                    widget.videoUrl,
+                  betterPlayerConfiguration: BetterPlayerConfiguration(
+                    // fullScreenByDefault: true,
+                    autoPlay: true,
+                    aspectRatio: 16/9,
+                    autoDispose: true
                   ),
                 ),
-                _controller!.value.isInitialized
-                    ? AspectRatio(
-                        aspectRatio: _controller!.value.aspectRatio,
-                        child: Stack(
-                          children: [
-                            VideoPlayer(_controller!),
-                            Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Row(
-                                children: [
-                                  VideoPlayerControl(
-                                    icon: Icons.play_arrow,
-                                    callback: () {
-                                      _controller?.play();
-                                    },
-                                  ),
-                                  VideoPlayerControl(
-                                    icon: Icons.pause,
-                                    callback: () {
-                                      _controller?.pause();
-                                    },
-                                  ),
-                                  VideoPlayerControl(
-                                    icon: Icons.stop,
-                                    callback: () {
-                                      _controller?.seekTo(Duration(seconds: 0));
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    VideoPlayerControl(
-                                      icon: Icons.fast_rewind,
-                                      callback: () async {
-                                        final pos = await _controller?.position;
-                                        _controller?.seekTo(Duration(seconds: pos!.inSeconds - 3));
-                                        },
-                                    ),
-                                    VideoPlayerControl(
-                                      icon: Icons.fast_forward,
-                                      callback: () async {
-                                        final pos = await _controller?.position;
-                                        _controller?.seekTo(Duration(seconds: pos!.inSeconds + 3));
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    : AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: Container(
-                          color: Colors.black,
-                          width: double.maxFinite,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                kPurpleColor,
-                              ),
-                              strokeWidth: 2,
-                            ),
-                          ),
-                        ),
-                      ),
-              ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0, left: 16.0, right: 16.0),
+              child: Container(
+                height: 2,
+                width: MediaQuery.of(context).size.width - 20,
+                color: kPurpleColor,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0, left: 16.0, right: 16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InfoTile(
-                    name: 'Asset ID',
-                    data: assetData!.id,
+              child: Text(
+                'Related Videos',
+                style: kOnBoardingTitleStyle.copyWith(color: kPurpleColor),
+              )
+            ),
+            Container(
+                height: size.height * 0.72,
+                width: size.width,
+                child: Container(
+                  child: ListView.builder(
+                    itemCount: videosList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _buildVideo(imagesList[index]);
+                    },
+
                   ),
-                  InfoTile(
-                    name: 'Created',
-                    data: dateTimeString,
-                  ),
-                  InfoTile(
-                    name: 'Status',
-                    data: assetData!.status,
-                  ),
-                  InfoTile(
-                    name: 'Duration',
-                    data: '${assetData!.duration!.toStringAsFixed(2)} seconds',
-                  ),
-                  InfoTile(
-                    name: 'Max Resolution',
-                    data: assetData!.maxStoredResolution,
-                  ),
-                  InfoTile(
-                    name: 'Max Frame Rate',
-                    data: assetData!.maxStoredFrameRate.toString(),
-                  ),
-                  InfoTile(
-                    name: 'Aspect Ratio',
-                    data: assetData!.aspectRatio,
-                  ),
-                  SizedBox(height: 8.0),
-                ],
-              ),
-            )
+                )
+            ),
           ],
         ),
       ),
     );
   }
-}
 
-class VideoPlayerControl extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback callback;
+  Widget _buildVideo(String image) {
+    /*if (video != null) {
+      if (likedVidsIds.contains(video.id)){
+        video.liked = true;
+      }
+    }*/
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0),
+      child: GestureDetector(
+        onTap: (){
+          /*Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => VideoScreen(video: video!),
+            ),
+          );*/
+          Navigator.push(context, MaterialPageRoute(builder:
+              (context) => PreviewPage(videoUrl: getVideoUrl(image))
+          ));
+        },
+        child: Material(
+          elevation: 8.0,
+          borderRadius: BorderRadius.circular(12.0),
+          child: Stack(
+            children: [
+              Container(
+                height: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: FractionallySizedBox(
+                    widthFactor: 1.2,
+                    child: Image.network(
+                      image,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
+              ),
+              /*Positioned(
+                bottom: 16,
+                left: 16,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: kAmberColor,
+                  ),
+                  height: 42,
+                  width: MediaQuery.of(context).size.width - 200,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2.0, left: 8.0),
+                    child: Text("${video.title!.substring(0, 12)}...",
+                        //overflow: ,
+                        style: kOnBoardingTitleStyle.copyWith(
+                            color: kScaffoldBackgroundColor, fontSize: 22)),
+                  ),
+                ),
+              ),*/
+              Positioned(
+                bottom: 22,
+                right: 12,
+                child: InkWell(
+                  onTap: () {
+                    /*if (!video.liked!) {
+                      print("${video.title} liked");
+                      try{
+                        _firestoreVideoService.likeVideo(video);
 
-  const VideoPlayerControl({
-    Key? key,
-    required this.icon,
-    required this.callback,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: Icon(
-        this.icon,
-        color: Colors.white,
-        size: 30,
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content:
+                            Text(
+                              "Liked: ${video.title}",
+                              style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
+                            )));
+                        setState(() {
+                          video.liked = true;
+                        });
+                      } catch (e) {
+                        debugPrint(e.toString());
+                      }
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content:
+                        Text(
+                          "Video already in \'Liked Videos\'",
+                          style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
+                        )));*/
+                  },
+                  child: Icon(
+                    // video.liked! ? Icons.favorite : Icons.favorite_border,
+                    Icons.favorite_border,
+                    color: kPurpleColor,
+                    size: 30,
+                  ),
+                ),
+              )
+              /*Positioned(
+                bottom: 16,
+                left: 146,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: kAmberColor,
+                  ),
+                  height: 42,
+                  width: 42,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2.8, left: 9.8),
+                    child: Text('E1',
+                        style: kOnBoardingTitleStyle.copyWith(
+                            color: kScaffoldBackgroundColor, fontSize: 22)),
+                  ),
+                ),
+              )*/
+            ],
+          ),
+        ),
       ),
-      onTap: callback,
     );
+  }
+
+  String getVideoUrl(String imageUrl) {
+    return imageUrl.replaceFirst('_img', '');
   }
 }

@@ -34,7 +34,7 @@ class AlertWidget{
     );
   }
 
-  generateContiueWatchingAlert({ @required context, @required title, @required description}){
+  generateContinueWatchingAlert({ @required context, @required title, @required description}){
     return Alert(
       context: context,
       type: AlertType.warning,
@@ -62,10 +62,64 @@ class AlertWidget{
       type: AlertType.none,
       title: title,
       desc: description,
-      content: TextField(
+      /*content: TextField(
         decoration: InputDecoration(
           icon: Icon(Icons.connected_tv),
           labelText: 'http://',
+        ),
+      ),*/
+      content: Padding(
+        padding: const EdgeInsets.only(top: 22.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              child: Card(
+                elevation: 5.0,
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  child: Center(
+                    child: Icon(
+                      Icons.add_photo_alternate,
+                      size: 42,
+                      color: kPurpleColor,
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    // border: Border.all(
+                    //   color: kPurpleColor
+                    // )
+                  ),
+                ),
+              ),
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              child: Card(
+                elevation: 5.0,
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  child: Center(
+                    child: Icon(
+                      Icons.video_call,
+                      size: 42,
+                      color: kPurpleColor,
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    // border: Border.all(
+                    //   color: kPurpleColor
+                    // )
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       buttons: [
