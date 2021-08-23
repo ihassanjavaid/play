@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:play_app/components/custom_painter.dart';
 import 'package:play_app/models/asset_data.dart';
@@ -7,6 +10,7 @@ import 'package:play_app/screens/likes_screen.dart';
 import 'package:play_app/screens/preview_page.dart';
 import 'package:play_app/screens/profile_screen.dart';
 import 'package:play_app/screens/search_screen.dart';
+import 'package:play_app/services/firestore_video_service.dart';
 import 'package:play_app/services/mux_client.dart';
 import 'package:play_app/services/video_streaming_service.dart';
 import 'package:play_app/services/youtube_api_service.dart';
@@ -26,6 +30,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
   late Widget bodyWidget;
+  FirestoreVideoService _firestoreVideoService = FirestoreVideoService();
 
   int numOfVideos = VideoStreamingService.getNumOfVids;
   List imagesList = VideoStreamingService.getImages();
@@ -36,9 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
       currentIndex = index;
     });
   }
-  
+
   void getScreen(BuildContext context) {
-    switch (currentIndex){
+    switch (currentIndex) {
       case 0:
         setState(() {
           bodyWidget = buildHomeScreen(context);
@@ -63,7 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
         });
         break;
     }
+  }
 
+  Future<List<dynamic>>? getLikedVids() async {
+    return await _firestoreVideoService.getLikedVideos()!;
   }
 
   @override
@@ -74,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: kDarkPurpleColor,
       body: bodyWidget,
       bottomNavigationBar: Container(
-      height: size.height/ 9.5,
+        height: size.height / 9.5,
         child: Stack(
           children: [
             Positioned(
@@ -94,15 +102,30 @@ class _HomeScreenState extends State<HomeScreen> {
                       heightFactor: 0.6,
                       child: FloatingActionButton(
                           backgroundColor: kPurpleColor,
-                          child: Icon(Icons.video_call),
+                          child: Icon(FontAwesomeIcons.random),
                           elevation: 0.1,
                           onPressed: () {
-                            AlertWidget()
-                                .generateUploadVideoDialog(
-                                context: context,
-                                title: "Upload Video",
-                                description: "Please select the banner and the video, and then tap upload.").show();
-                          }),
+                            // AlertWidget()
+                            //     .generateUploadVideoDialog(
+                            //         context: context,
+                            //         title: "Upload Video",
+                            //         description:
+                            //             "Please select the banner and the video, and then tap upload.")
+                            //     .show();
+                            var _random = new Random();
+                            var num = _random.nextInt(4);
+
+
+
+                            String imageUrl = imagesList[num];
+
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PreviewPage(videoUrl: getVideoUrl(imageUrl))));
+                          }
+                          ),
                     ),
                     Container(
                       width: size.width,
@@ -113,7 +136,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           IconButton(
                             icon: Icon(
                               Icons.home,
-                              color: currentIndex == 0 ? kPurpleColor : Colors.grey.shade400,
+                              color: currentIndex == 0
+                                  ? kPurpleColor
+                                  : Colors.grey.shade400,
                             ),
                             onPressed: () {
                               setBottomBarIndex(0);
@@ -124,7 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           IconButton(
                               icon: Icon(
                                 Icons.search,
-                                color: currentIndex == 1 ? kPurpleColor : Colors.grey.shade400,
+                                color: currentIndex == 1
+                                    ? kPurpleColor
+                                    : Colors.grey.shade400,
                               ),
                               onPressed: () {
                                 setBottomBarIndex(1);
@@ -136,7 +163,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           IconButton(
                               icon: Icon(
                                 Icons.bookmark,
-                                color: currentIndex == 2 ? kPurpleColor : Colors.grey.shade400,
+                                color: currentIndex == 2
+                                    ? kPurpleColor
+                                    : Colors.grey.shade400,
                               ),
                               onPressed: () {
                                 setBottomBarIndex(2);
@@ -145,7 +174,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           IconButton(
                               icon: Icon(
                                 Icons.menu,
-                                color: currentIndex == 3 ? kPurpleColor : Colors.grey.shade400,
+                                color: currentIndex == 3
+                                    ? kPurpleColor
+                                    : Colors.grey.shade400,
                               ),
                               onPressed: () {
                                 setBottomBarIndex(3);
@@ -175,40 +206,62 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 height: 80,
                 width: 80,
-                child: Image.asset(
-                    'assets/images/logo_transparent.png'),
+                child: Image.asset('assets/images/logo_transparent.png'),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 31.0, left: 12),
               child: Container(
                 child: Text(
-                  'Play',
-                  style:
-                  kOnBoardingTitleStyle.copyWith(fontSize: 48, color: Colors.white),
+                  'Watchtime',
+                  style: kOnBoardingTitleStyle.copyWith(
+                      fontSize: 48, color: Colors.white),
                 ),
               ),
             )
           ],
         ),
-        Container(
-            height: size.height * 0.72,
-            width: size.width,
-            child: Container(
-              child: ListView.builder(
-                itemCount: videosList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildVideo(imagesList[index]);
-                },
-
-              ),
-            )
-        ),
+        FutureBuilder<List>(
+            future: getLikedVids(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<String>? likedVideosId = [];
+                for (var i in snapshot.data!) {
+                  likedVideosId.add(i.id);
+                }
+                return Container(
+                    height: size.height * 0.72,
+                    width: size.width,
+                    child: Container(
+                      child: ListView.builder(
+                        itemCount: videosList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          bool liked = false;
+                          if (likedVideosId.contains(index.toString())) {
+                            liked = true;
+                          }
+                          return _buildVideo(imagesList[index], liked);
+                        },
+                      ),
+                    ));
+              } else {
+                return Container(
+                  height: size.height * 0.72,
+                  width: size.width,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: kDarkPurpleColor,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              }
+            }),
       ],
     );
   }
 
-  Widget _buildVideo(String image) {
+  Widget _buildVideo(String image, bool isLiked) {
     /*if (video != null) {
       if (likedVidsIds.contains(video.id)){
         video.liked = true;
@@ -217,16 +270,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0),
       child: GestureDetector(
-        onTap: (){
+        onTap: () {
           /*Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) => VideoScreen(video: video!),
             ),
           );*/
-          Navigator.push(context, MaterialPageRoute(builder:
-           (context) => PreviewPage(videoUrl: getVideoUrl(image))
-          ));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      PreviewPage(videoUrl: getVideoUrl(image))));
         },
         child: Material(
           elevation: 8.0,
@@ -246,60 +301,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              /*Positioned(
-                bottom: 16,
-                left: 16,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.0),
-                    color: kAmberColor,
-                  ),
-                  height: 42,
-                  width: MediaQuery.of(context).size.width - 200,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 2.0, left: 8.0),
-                    child: Text("${video.title!.substring(0, 12)}...",
-                        //overflow: ,
-                        style: kOnBoardingTitleStyle.copyWith(
-                            color: kScaffoldBackgroundColor, fontSize: 22)),
-                  ),
-                ),
-              ),*/
               Positioned(
                 bottom: 22,
                 right: 12,
                 child: InkWell(
-                  onTap: () {
-                    /*if (!video.liked!) {
-                      print("${video.title} liked");
-                      try{
-                        _firestoreVideoService.likeVideo(video);
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content:
-                            Text(
-                              "Liked: ${video.title}",
-                              style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
-                            )));
-                        setState(() {
-                          video.liked = true;
-                        });
-                      } catch (e) {
-                        debugPrint(e.toString());
+                  onTap: () {},
+                  child: GestureDetector(
+                    onTap: () async {
+                      if (isLiked) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            'Video already liked.',
+                            style: kOnBoardingTitleStyle.copyWith(
+                                fontSize: 20, color: Colors.white),
+                          ),
+                        ));
+                      } else {
+                        String? id = image.split('/').last.split('_').first;
+                        print("Video to be liked ID: $id");
+                        try {
+                          await _firestoreVideoService.likeVideo(id);
+                        } catch (e) {
+                          print("Can\'t like: ${e.toString()}");
+                        }
                       }
-                    }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content:
-                        Text(
-                          "Video already in \'Liked Videos\'",
-                          style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
-                        )));*/
-                  },
-                  child: Icon(
-                    // video.liked! ? Icons.favorite : Icons.favorite_border,
-                    Icons.favorite_border,
-                    color: kPurpleColor,
-                    size: 30,
+                    },
+                    child: Icon(
+                      isLiked ? Icons.favorite : Icons.favorite_border,
+                      //Icons.favorite_border,
+                      color: kPurpleColor,
+                      size: 30,
+                    ),
                   ),
                 ),
               )
@@ -329,9 +361,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String getVideoUrl(String imageUrl) {
-    return imageUrl.replaceFirst('_img', '');
+    return VideoStreamingService.getVideoUrl(imageUrl);
   }
 }
-
-
-

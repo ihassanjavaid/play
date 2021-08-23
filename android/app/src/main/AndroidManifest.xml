@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jazzinternship.play.play_app">
    <application
-        android:label="Play"
+        android:label="Watchtime"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
 

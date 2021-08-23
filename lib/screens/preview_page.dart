@@ -133,81 +133,6 @@ class _PreviewPageState extends State<PreviewPage> {
                   ),
                 ),
               ),
-              /*Positioned(
-                bottom: 16,
-                left: 16,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.0),
-                    color: kAmberColor,
-                  ),
-                  height: 42,
-                  width: MediaQuery.of(context).size.width - 200,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 2.0, left: 8.0),
-                    child: Text("${video.title!.substring(0, 12)}...",
-                        //overflow: ,
-                        style: kOnBoardingTitleStyle.copyWith(
-                            color: kScaffoldBackgroundColor, fontSize: 22)),
-                  ),
-                ),
-              ),*/
-              Positioned(
-                bottom: 22,
-                right: 12,
-                child: InkWell(
-                  onTap: () {
-                    /*if (!video.liked!) {
-                      print("${video.title} liked");
-                      try{
-                        _firestoreVideoService.likeVideo(video);
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content:
-                            Text(
-                              "Liked: ${video.title}",
-                              style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
-                            )));
-                        setState(() {
-                          video.liked = true;
-                        });
-                      } catch (e) {
-                        debugPrint(e.toString());
-                      }
-                    }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content:
-                        Text(
-                          "Video already in \'Liked Videos\'",
-                          style: kOnBoardingTitleStyle.copyWith(fontSize: 18),
-                        )));*/
-                  },
-                  child: Icon(
-                    // video.liked! ? Icons.favorite : Icons.favorite_border,
-                    Icons.favorite_border,
-                    color: kPurpleColor,
-                    size: 30,
-                  ),
-                ),
-              )
-              /*Positioned(
-                bottom: 16,
-                left: 146,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.0),
-                    color: kAmberColor,
-                  ),
-                  height: 42,
-                  width: 42,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 2.8, left: 9.8),
-                    child: Text('E1',
-                        style: kOnBoardingTitleStyle.copyWith(
-                            color: kScaffoldBackgroundColor, fontSize: 22)),
-                  ),
-                ),
-              )*/
             ],
           ),
         ),
@@ -216,6 +141,6 @@ class _PreviewPageState extends State<PreviewPage> {
   }
 
   String getVideoUrl(String imageUrl) {
-    return imageUrl.replaceFirst('_img', '');
+    return VideoStreamingService.getVideoUrl(imageUrl);
   }
 }

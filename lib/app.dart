@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:play_app/routes.dart';
 import 'package:play_app/screens/home_screen.dart';
 import 'package:play_app/screens/login_screen.dart';
+import 'package:play_app/services/auto_login_service.dart';
 import 'package:play_app/utilities/constants.dart';
 
 class Play extends StatelessWidget {
@@ -12,11 +13,11 @@ class Play extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: kPlayThemeData,
-      title: 'Play',
+      title: 'Watchtime',
       home: AnimatedSplashScreen(
         splashIconSize: 200,
         duration: 2600,
-        nextScreen: LoginScreen(),
+        nextScreen: AutoLoginService(),
         // nextScreen: HomeScreen(),
         splash: Image.asset(
           'assets/images/logo_transparent.png',

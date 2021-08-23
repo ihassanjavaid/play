@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:play_app/screens/preview_page.dart';
+import 'package:play_app/services/video_streaming_service.dart';
 import 'package:play_app/utilities/constants.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -22,13 +24,20 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 }
 
-class BuildSearchBar extends StatelessWidget {
+class BuildSearchBar extends StatefulWidget {
   const BuildSearchBar({
     Key? key,
     required this.isPortrait,
   }) : super(key: key);
 
   final bool isPortrait;
+
+  @override
+  _BuildSearchBarState createState() => _BuildSearchBarState();
+}
+
+class _BuildSearchBarState extends State<BuildSearchBar> {
+  Widget searchContainer = Container();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +63,7 @@ class BuildSearchBar extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 31.0, left: 12),
                   child: Container(
                     child: Text(
-                      'Play',
+                      'Watchtime',
                       style:
                       kOnBoardingTitleStyle.copyWith(fontSize: 48, color: Colors.white),
                     ),
@@ -63,7 +72,7 @@ class BuildSearchBar extends StatelessWidget {
               ],
             ),
             SizedBox(
-              height: size.height / 2,
+              height: size.height / 2 - 50,
               width: size.width,
               child: FloatingSearchBar(
                 //backgroundColor: kScaffoldBackgroundColor,
@@ -75,11 +84,20 @@ class BuildSearchBar extends StatelessWidget {
                 transitionDuration: const Duration(milliseconds: 800),
                 transitionCurve: Curves.easeInOut,
                 physics: const BouncingScrollPhysics(),
-                axisAlignment: isPortrait ? 0.0 : -1.0,
+                axisAlignment: widget.isPortrait ? 0.0 : -1.0,
                 openAxisAlignment: 0.0,
-                width: isPortrait ? 600 : 500,
+                width: widget.isPortrait ? 600 : 500,
                 debounceDelay: const Duration(milliseconds: 500),
                 onQueryChanged: (query) {},
+                onSubmitted: (searchString){
+                  // Search Logic
+                  String? imageUrl = VideoStreamingService.search(searchString);
+                  if (imageUrl != null){
+                    setState(() {
+                      searchContainer = _buildVideo(imageUrl, false);
+                    });
+                  }
+                },
                 transition: CircularFloatingSearchBarTransition(),
                 actions: [
                   FloatingSearchBarAction(
@@ -95,19 +113,7 @@ class BuildSearchBar extends StatelessWidget {
                   ),
                 ],
                 builder: (context, transition) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Material(
-                      color: kScaffoldBackgroundColor,
-                      elevation: 4.0,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: Colors.accents.map((color) {
-                          return Container(height: 112, color: color);
-                        }).toList().sublist(0, 3),
-                      ),
-                    ),
-                  );
+                  return searchContainer;
                 },
               ),
             )
@@ -115,5 +121,56 @@ class BuildSearchBar extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildVideo(String image, bool isLiked) {
+    /*if (video != null) {
+      if (likedVidsIds.contains(video.id)){
+        video.liked = true;
+      }
+    }*/
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 12.0),
+      child: GestureDetector(
+        onTap: () {
+          /*Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => VideoScreen(video: video!),
+            ),
+          );*/
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      PreviewPage(videoUrl: getVideoUrl(image))));
+        },
+        child: Material(
+          elevation: 8.0,
+          borderRadius: BorderRadius.circular(12.0),
+          child: Stack(
+            children: [
+              Container(
+                height: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: FractionallySizedBox(
+                    widthFactor: 1.2,
+                    child: Image.network(
+                      image,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String getVideoUrl(String imageUrl) {
+    return VideoStreamingService.getVideoUrl(imageUrl);
   }
 }

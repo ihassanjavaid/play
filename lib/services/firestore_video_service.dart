@@ -56,7 +56,7 @@ class FirestoreVideoService {
     }
   }
 
-  Future<List<QueryDocumentSnapshot<Object?>>?> getLikedVideos() async {
+  Future<List<dynamic>>? getLikedVideos() async {
     checkInternetConnection();
     String? _email = await getCurrentUserEmail();
 
@@ -81,5 +81,7 @@ class FirestoreVideoService {
 
       return querySnapshot.docs;
     }
+    List list = [];
+    return list;
   }
 }

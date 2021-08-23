@@ -34,113 +34,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      SizedBox(
+                        height: 30.0,
+                      ),
                       CircleAvatar(
                         backgroundColor: kDarkPurpleColor,
                         foregroundColor: kDarkPurpleColor,
-                        backgroundImage: NetworkImage(
-                            "https://www.pikpng.com/pngl/m/154-1540525_male-user-filled-icon-my-profile-icon-png.png"),
+                        backgroundImage: AssetImage('assets/images/logo_transparent.png'),
                         radius: 50.0,
                       ),
                       SizedBox(
-                        height: 10.0,
+                        height: 30.0,
                       ),
                       Text(
-                        "",
-                        style: TextStyle(
-                          fontSize: 22.0,
-                          color: Colors.white,
-                        ),
+                        "Watchtime",
+                        style: kOnBoardingTitleStyle.copyWith(color: kDarkPurpleColor, fontSize: 40),
                       ),
                       SizedBox(
                         height: 10.0,
                       ),
-                      Card(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 5.0),
-                        clipBehavior: Clip.antiAlias,
-                        color: kDarkPurpleColor,
-                        elevation: 5.0,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 22.0),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Column(
-                                  children: <Widget>[
-                                    Text(
-                                      "Videos",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5.0,
-                                    ),
-                                    Text(
-                                      "0",
-                                      style: TextStyle(
-                                        fontSize: 20.0,
-                                        color: Colors.white70,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  children: <Widget>[
-                                    Text(
-                                      "Subscribers",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5.0,
-                                    ),
-                                    Text(
-                                      "0",
-                                      style: TextStyle(
-                                        fontSize: 20.0,
-                                        color: Colors.white70,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  children: <Widget>[
-                                    Text(
-                                      "Followers",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5.0,
-                                    ),
-                                    Text(
-                                      "0",
-                                      style: TextStyle(
-                                        fontSize: 20.0,
-                                        color: Colors.white70,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
                     ],
                   ),
                 ),
